@@ -54,4 +54,9 @@ extension UserProfile {
         role: .landlord,
         phoneNumber: "416-555-0123"
     )
+
+    static let samples = [
+        sampleTenant,
+        sampleLandlord,
+    ]
 }
