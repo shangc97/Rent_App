@@ -40,23 +40,23 @@ struct TenantPropertyActionsView: View {
     }
 }
 
-#Preview("Tenant Property Actions") {
-    @Previewable @State var isShortlisted = false
-    @Previewable @State var hasSubmittedRequest = false
-
-    NavigationStack {
-        List {
-            TenantPropertyActionsView(
-                isShortlisted: $isShortlisted,
-                hasSubmittedRequest: $hasSubmittedRequest
-            )
-        }
-    }
-    .environment(
-        AppState.preview(
-            sessionState: .tenant,
-            currentUserRole: .tenant,
-            currentUserId: "demo-tenant"
-        )
-    )
-}
+//#Preview("Tenant Property Actions") {
+//    @Previewable @State var isShortlisted = false
+//    @Previewable @State var hasSubmittedRequest = false
+//
+//    NavigationStack {
+//        List {
+//            TenantPropertyActionsView(
+//                isShortlisted: $isShortlisted,
+//                hasSubmittedRequest: $hasSubmittedRequest
+//            )
+//        }
+//    }
+//    .environment(
+//        AppState.preview(
+//            sessionState: .tenant,
+//            currentUserRole: .tenant,
+//            currentUserId: "demo-tenant"
+//        )
+//    )
+//}

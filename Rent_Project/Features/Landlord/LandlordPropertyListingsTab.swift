@@ -8,25 +8,25 @@
 import SwiftUI
 
 struct LandlordPropertyListingsTab: View {
-    private let sampleProperties = [
-        "Downtown Condo",
-        "North York Basement Suite",
-        "Mississauga Townhouse"
-    ]
+    @State private var properties = Property.samples.filter {
+        $0.landlordId == "demo-landlord"
+    }
+    @State private var pendingDeletion: Property?
 
     var body: some View {
         List {
             Section("Your Property Listing") {
-                ForEach(sampleProperties, id: \.self) { property in
+                ForEach(properties) { property in
                     NavigationLink {
-                        PropertyDetailsView()
+                        PropertyDetailsView(property: property)
                     } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(property)
-                                .font(.headline)
-                            Text("Tap to preview a managed property.")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                        PropertyRowView(property: property)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            pendingDeletion = property
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
                     }
                 }
@@ -41,6 +41,33 @@ struct LandlordPropertyListingsTab: View {
         }
         .navigationTitle("My Listings")
         .navigationBarTitleDisplayMode(.inline)
+        .alert(
+            "Delete Listing?",
+            isPresented: isDeleteAlertPresented,
+            presenting: pendingDeletion
+        ) { property in
+            Button("Cancel", role: .cancel) {
+                pendingDeletion = nil
+            }
+            Button("Delete", role: .destructive) {
+                ///TODO: Delete
+            }
+        } message: { property in
+            Text(
+                "Are you sure you want to delete \(property.address.streetAddress)? This action cannot be undone."
+            )
+        }
+    }
+
+    private var isDeleteAlertPresented: Binding<Bool> {
+        Binding(
+            get: { pendingDeletion != nil },
+            set: { isPresented in
+                if !isPresented {
+                    pendingDeletion = nil
+                }
+            }
+        )
     }
 }
 

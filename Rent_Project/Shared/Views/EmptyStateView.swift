@@ -29,6 +29,6 @@ struct EmptyStateView: View {
     }
 }
 
-#Preview {
-    EmptyStateView(title: "test", message: "test", systemImage: "plus")
-}
+//#Preview {
+//    EmptyStateView(title: "test", message: "test", systemImage: "plus")
+//}

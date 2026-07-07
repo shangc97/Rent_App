@@ -24,7 +24,7 @@ struct GuestHomeView: View {
                 }
                 .tag(GuestTab.listings)
 
-            GuestPropertySearchTab()
+            PropertySearchView()
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }

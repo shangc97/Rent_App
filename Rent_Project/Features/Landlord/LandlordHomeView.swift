@@ -31,7 +31,7 @@ struct LandlordHomeView: View {
                 }
                 .tag(LandlordTab.requests)
 
-            LandlordSearchTab()
+            PropertySearchView()
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }

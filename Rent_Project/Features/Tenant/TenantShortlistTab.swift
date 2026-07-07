@@ -8,25 +8,26 @@
 import SwiftUI
 
 struct TenantShortlistTab: View {
-    private let sampleShortlist = [
-        "Downtown Studio",
-        "North York Condo",
-        "Waterfront Apartment"
+    @State private var shortlist = [
+        Property.sampleCondo,
+        Property.sampleTownhouse
     ]
+    @State private var pendingDeletion: Property?
 
     var body: some View {
         List {
             Section("My Shortlist") {
-                ForEach(sampleShortlist, id: \.self) { property in
+                ForEach(shortlist) { property in
                     NavigationLink {
-                        PropertyDetailsView()
+                        PropertyDetailsView(property: property)
                     } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(property)
-                                .font(.headline)
-                            Text("Saved by the tenant for later comparison.")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                        PropertyRowView(property: property)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            pendingDeletion = property
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
                     }
                 }
@@ -41,6 +42,33 @@ struct TenantShortlistTab: View {
         }
         .navigationTitle("My Shortlist")
         .navigationBarTitleDisplayMode(.inline)
+        .alert(
+            "Remove from Shortlist?",
+            isPresented: isDeleteAlertPresented,
+            presenting: pendingDeletion
+        ) { property in
+            Button("Cancel", role: .cancel) {
+                pendingDeletion = nil
+            }
+            Button("Delete", role: .destructive) {
+                ///TODO: Delete
+            }
+        } message: { property in
+            Text(
+                "Are you sure you want to remove \(property.address.streetAddress) from your shortlist?"
+            )
+        }
+    }
+
+    private var isDeleteAlertPresented: Binding<Bool> {
+        Binding(
+            get: { pendingDeletion != nil },
+            set: { isPresented in
+                if !isPresented {
+                    pendingDeletion = nil
+                }
+            }
+        )
     }
 }
 

@@ -11,24 +11,19 @@ struct PropertyDetailsView: View {
     @Environment(AppState.self) private var appState
 
     let property: Property
-    @State private var isListed: Bool
+    @State private var propertyStatus: PropertyStatus
     @State private var isShortlisted = false
     @State private var hasSubmittedRequest = false
 
     init(property: Property = .sample) {
         self.property = property
-        _isListed = State(initialValue: property.isListed)
-    }
-
-    private var propertyStatusText: String {
-        isListed ? "Available" : "Not Listed"
+        _propertyStatus = State(initialValue: property.status)
     }
 
     var body: some View {
         List {
             PropertyDetailsContentView(
-                property: property,
-                statusText: propertyStatusText
+                property: displayProperty
             )
 
             roleSpecificActionsSection
@@ -38,8 +33,8 @@ struct PropertyDetailsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 ShareLink(
-                    item: property.shareSummary,
-                    subject: Text(property.title),
+                    item: displayProperty.shareSummary,
+                    subject: Text(displayProperty.title),
                     message: Text("Sharing a property listing")
                 ) {
                     Image(systemName: "square.and.arrow.up")
@@ -47,6 +42,12 @@ struct PropertyDetailsView: View {
                 .accessibilityLabel("Share property")
             }
         }
+    }
+
+    private var displayProperty: Property {
+        var property = property
+        property.status = propertyStatus
+        return property
     }
 
     @ViewBuilder
@@ -58,42 +59,42 @@ struct PropertyDetailsView: View {
                 hasSubmittedRequest: $hasSubmittedRequest
             )
         case .landlord:
-            LandlordPropertyActionsView(isListed: $isListed)
+            LandlordPropertyActionsView(status: $propertyStatus)
         case .none:
             GuestPropertyActionsView()
         }
     }
 }
 
-#Preview("Guest Property Details") {
-    NavigationStack {
-        PropertyDetailsView(property: .sample)
-    }
-    .environment(AppState.preview(sessionState: .guest))
-}
-
-#Preview("Tenant Property Details") {
-    NavigationStack {
-        PropertyDetailsView(property: .sample)
-    }
-    .environment(
-        AppState.preview(
-            sessionState: .tenant,
-            currentUserRole: .tenant,
-            currentUserId: "demo-tenant"
-        )
-    )
-}
-
-#Preview("Landlord Property Details") {
-    NavigationStack {
-        PropertyDetailsView(property: .sample)
-    }
-    .environment(
-        AppState.preview(
-            sessionState: .landlord,
-            currentUserRole: .landlord,
-            currentUserId: "demo-landlord"
-        )
-    )
-}
+//#Preview("Guest Property Details") {
+//    NavigationStack {
+//        PropertyDetailsView(property: .sample)
+//    }
+//    .environment(AppState.preview(sessionState: .guest))
+//}
+//
+//#Preview("Tenant Property Details") {
+//    NavigationStack {
+//        PropertyDetailsView(property: .sample)
+//    }
+//    .environment(
+//        AppState.preview(
+//            sessionState: .tenant,
+//            currentUserRole: .tenant,
+//            currentUserId: "demo-tenant"
+//        )
+//    )
+//}
+//
+//#Preview("Landlord Property Details") {
+//    NavigationStack {
+//        PropertyDetailsView(property: .sample)
+//    }
+//    .environment(
+//        AppState.preview(
+//            sessionState: .landlord,
+//            currentUserRole: .landlord,
+//            currentUserId: "demo-landlord"
+//        )
+//    )
+//}

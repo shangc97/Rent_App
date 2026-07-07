@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AppUserRole: String, CaseIterable, Identifiable {
+enum AppUserRole: String, CaseIterable, Identifiable, Codable, Hashable, Sendable {
     case tenant
     case landlord
 

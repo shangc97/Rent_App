@@ -8,38 +8,60 @@
 import SwiftUI
 
 struct PropertySearchView: View {
-    let navigationTitle: String
-    let helperText: String
-
-    @State private var keyword = ""
+    @State private var userInput = ""
 
     var body: some View {
         List {
             Section("Search Property") {
-                TextField("Search by city, address, or keyword", text: $keyword)
-                    .textInputAutocapitalization(.never)
-
-                Text(helperText)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                TextField(
+                    "Search by city, address, or keyword",
+                    text: $userInput
+                )
+                .textInputAutocapitalization(.words)
             }
 
-            Section("Sample Search Result") {
-                NavigationLink("Open Matching Property") {
-                    PropertyDetailsView()
+            Section("Search Results") {
+                if filteredProperties.isEmpty {
+                    Text("No matching properties.")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(filteredProperties, id: \.propertyId) { property in
+                        NavigationLink {
+                            PropertyDetailsView(property: property)
+                        } label: {
+                            PropertyRowView(property: property)
+                        }
+                    }
                 }
             }
         }
-        .navigationTitle(navigationTitle)
+        .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var filteredProperties: [Property] {
+        let searchableProperties = Property.samples.filter { $0.isListed }
+        let trimmedKeyword = userInput.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
+        guard !trimmedKeyword.isEmpty else { return searchableProperties }
+
+        return searchableProperties.filter { property in
+            property.title.localizedCaseInsensitiveContains(trimmedKeyword)
+                || property.address.city.localizedCaseInsensitiveContains(
+                    trimmedKeyword
+                )
+                || property.address.streetAddress
+                    .localizedCaseInsensitiveContains(trimmedKeyword)
+                || property.address.fullAddress
+                    .localizedCaseInsensitiveContains(trimmedKeyword)
+        }
     }
 }
 
 #Preview("Shared Property Search") {
     NavigationStack {
-        PropertySearchView(
-            navigationTitle: "Search",
-            helperText: "This shared search view can be reused by guest, tenant, and landlord flows."
-        )
+        PropertySearchView()
     }
 }

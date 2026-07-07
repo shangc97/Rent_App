@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct LandlordPropertyActionsView: View {
-    @Binding var isListed: Bool
+    @Binding var status: PropertyStatus
 
     var body: some View {
         Section("Landlord Actions") {
             Button {
-                isListed.toggle()
+                status = status == .listed ? .unlisted : .listed
             } label: {
                 Label(
-                    isListed ? "Mark as Unlisted" : "Relist Property",
-                    systemImage: isListed ? "eye.slash" : "eye"
+                    actionTitle,
+                    systemImage: status == .listed ? "eye.slash" : "eye"
                 )
             }
 
@@ -32,14 +32,23 @@ struct LandlordPropertyActionsView: View {
             .foregroundStyle(.secondary)
         }
     }
+
+    private var actionTitle: String {
+        switch status {
+        case .listed:
+            "Mark as Unlisted"
+        case .unlisted, .rented:
+            "Relist Property"
+        }
+    }
 }
 
 #Preview("Landlord Property Actions") {
-    @Previewable @State var isListed = true
+    @Previewable @State var status: PropertyStatus = .listed
 
     NavigationStack {
         List {
-            LandlordPropertyActionsView(isListed: $isListed)
+            LandlordPropertyActionsView(status: $status)
         }
     }
     .environment(
