@@ -8,16 +8,39 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
+    @Environment(AuthStore.self) private var authStore
+    @Environment(UserProfileStore.self) private var userProfileStore
     @State private var fullName = ""
     @State private var email = ""
+    @State private var phoneNumber = ""
     @State private var password = ""
     @State private var selectedRole: AppUserRole = .tenant
+    @State private var localErrorMessage: String?
+
+    private var isSubmitting: Bool {
+        authStore.isLoading || userProfileStore.isLoading
+    }
+
+    private var canCreateAccount: Bool {
+        !fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !password.isEmpty
+    }
+
+    private var errorMessage: String? {
+        localErrorMessage ?? authStore.errorMessage
+            ?? userProfileStore.errorMessage
+    }
 
     var body: some View {
         Form {
             Section("Profile Basics") {
                 TextField("Full Name", text: $fullName)
+
+                TextField("Phone Number", text: $phoneNumber)
+                    .keyboardType(.phonePad)
 
                 TextField("Email", text: $email)
                     .textInputAutocapitalization(.never)
@@ -35,18 +58,34 @@ struct SignUpView: View {
                 .pickerStyle(.segmented)
             }
 
-            Section("Demo Sign Up") {
-                Button("Create Demo Account") {
-                    appState.signIn(as: selectedRole)
+            Button {
+                Task {
+                    await createAccount()
+                }
+            } label: {
+                HStack {
+                    Spacer()
+
+                    if isSubmitting {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Text("Create Account")
+                            .fontWeight(.semibold)
+                    }
+
+                    Spacer()
                 }
             }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(!canCreateAccount || isSubmitting)
 
-            Section("What comes later") {
-                Text(
-                    "This screen is only shaping the flow for now. Real validation and Firebase account creation belong to Module 4."
-                )
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            if let errorMessage {
+                Section("Error") {
+                    Text(errorMessage)
+                        .foregroundStyle(.red)
+                }
             }
 
             Section {
@@ -56,8 +95,8 @@ struct SignUpView: View {
                     Text("Already have an account?")
                         .foregroundStyle(.secondary)
 
-                    NavigationLink("Sign In") {
-                        SignInView()
+                    Button("Back to Sign In") {
+                        navigateToSignIn()
                     }
                     .fontWeight(.semibold)
                     .buttonStyle(.plain)
@@ -69,11 +108,67 @@ struct SignUpView: View {
         .navigationTitle("Sign Up")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
 
-#Preview("Sign Up") {
-    NavigationStack {
-        SignUpView()
+    private func navigateToSignIn() {
+        localErrorMessage = nil
+        authStore.restoreSession()
+        userProfileStore.clearUserProfile()
+
+        if appState.sessionState == .guest {
+            appState.showLoggedOut()
+        } else {
+            dismiss()
+        }
     }
-    .environment(AppState.preview(sessionState: .loggedOut))
+
+    private func createAccount() async {
+        localErrorMessage = nil
+
+        let normalizedEmail = email.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let normalizedFullName = fullName.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        let normalizedPhoneNumber = phoneNumber.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
+        await authStore.createAccount(
+            email: normalizedEmail,
+            password: password
+        )
+
+        guard let userId = authStore.currentUserId else { return }
+
+        let userProfile = UserProfile(
+            userId: userId,
+            email: normalizedEmail,
+            fullName: normalizedFullName,
+            role: selectedRole,
+            phoneNumber: normalizedPhoneNumber
+        )
+
+        await userProfileStore.createUserProfile(userProfile)
+
+        if userProfileStore.errorMessage != nil {
+            authStore.signOut()
+            return
+        }
+
+        let didActivateSession =
+            await AppSessionCoordinator
+            .activateAuthenticatedSession(
+                userId: userId,
+                appState: appState,
+                userProfileStore: userProfileStore
+            )
+
+        guard didActivateSession else {
+            localErrorMessage =
+                "Could not load the user profile for this account."
+            authStore.signOut()
+            return
+        }
+    }
 }
