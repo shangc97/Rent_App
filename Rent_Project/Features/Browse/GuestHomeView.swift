@@ -18,7 +18,7 @@ struct GuestHomeView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            GuestPropertyListingsTab()
+            AllPropertyListingsTab(properties: Property.samples)
                 .tabItem {
                     Label("Listings", systemImage: "building.2")
                 }
