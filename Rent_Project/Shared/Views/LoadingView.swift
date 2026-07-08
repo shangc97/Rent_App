@@ -25,7 +25,3 @@ struct LoadingView: View {
         .padding(24)
     }
 }
-
-//#Preview {
-//    LoadingView()
-//}

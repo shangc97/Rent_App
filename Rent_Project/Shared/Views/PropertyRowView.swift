@@ -119,10 +119,3 @@ struct PropertyRowView: View {
         return URL(string: property.imageURL)
     }
 }
-
-#Preview("Property Row List") {
-    List {
-        PropertyRowView(property: .sampleCondo)
-        PropertyRowView(property: .sampleTownhouse)
-    }
-}

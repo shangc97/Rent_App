@@ -28,7 +28,3 @@ struct EmptyStateView: View {
         .padding(24)
     }
 }
-
-//#Preview {
-//    EmptyStateView(title: "test", message: "test", systemImage: "plus")
-//}
