@@ -1,5 +1,5 @@
 //
-//  AllPropertyListingsTab.swift
+//  AllPropertyListingsView.swift
 //  Rent_Project
 //
 //  Created by Chuhan Shang on 2026-07-07.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AllPropertyListingsTab: View {
+struct AllPropertyListingsView: View {
     let properties: [Property]
 
     var body: some View {
@@ -35,8 +35,8 @@ struct AllPropertyListingsTab: View {
     }
 }
 
-#Preview("All Property Listings Tab") {
+#Preview("All Property Listings View") {
     NavigationStack {
-        AllPropertyListingsTab(properties: Property.samples)
+        AllPropertyListingsView(properties: Property.samples)
     }
 }

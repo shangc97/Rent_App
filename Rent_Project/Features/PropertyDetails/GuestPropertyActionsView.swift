@@ -15,12 +15,12 @@ struct GuestPropertyActionsView: View {
             )
             .foregroundStyle(.secondary)
 
-            NavigationLink("Log In to Continue") {
-                LoginView()
+            NavigationLink("Sign In to Continue") {
+                SignInView()
             }
 
-            NavigationLink("Register an Account") {
-                RegisterView()
+            NavigationLink("Sign Up for an Account") {
+                SignUpView()
             }
         }
     }

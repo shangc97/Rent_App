@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  SignInView.swift
 //  Rent_Project
 //
 //  Created by Chuhan Shang on 2026-07-06.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LoginView: View {
+struct SignInView: View {
     @Environment(AppState.self) private var appState
     @State private var email = ""
     @State private var password = ""
@@ -50,8 +50,8 @@ struct LoginView: View {
                     Text("Don't have an account?")
                         .foregroundStyle(.secondary)
 
-                    NavigationLink("Register") {
-                        RegisterView()
+                    NavigationLink("Sign Up") {
+                        SignUpView()
                     }
                     .fontWeight(.semibold)
                     .buttonStyle(.plain)
@@ -60,14 +60,14 @@ struct LoginView: View {
                 }
             }
         }
-        .navigationTitle("Log In")
+        .navigationTitle("Sign In")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-#Preview("Login") {
+#Preview("Sign In") {
     NavigationStack {
-        LoginView()
+        SignInView()
     }
     .environment(AppState.preview(sessionState: .loggedOut))
 }

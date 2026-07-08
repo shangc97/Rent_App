@@ -1,5 +1,5 @@
 //
-//  RegisterView.swift
+//  SignUpView.swift
 //  Rent_Project
 //
 //  Created by Chuhan Shang on 2026-07-06.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RegisterView: View {
+struct SignUpView: View {
     @Environment(AppState.self) private var appState
     @State private var fullName = ""
     @State private var email = ""
@@ -35,7 +35,7 @@ struct RegisterView: View {
                 .pickerStyle(.segmented)
             }
 
-            Section("Demo Registration") {
+            Section("Demo Sign Up") {
                 Button("Create Demo Account") {
                     appState.signIn(as: selectedRole)
                 }
@@ -56,8 +56,8 @@ struct RegisterView: View {
                     Text("Already have an account?")
                         .foregroundStyle(.secondary)
 
-                    NavigationLink("Log In") {
-                        LoginView()
+                    NavigationLink("Sign In") {
+                        SignInView()
                     }
                     .fontWeight(.semibold)
                     .buttonStyle(.plain)
@@ -66,14 +66,14 @@ struct RegisterView: View {
                 }
             }
         }
-        .navigationTitle("Register")
+        .navigationTitle("Sign Up")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-#Preview("Register") {
+#Preview("Sign Up") {
     NavigationStack {
-        RegisterView()
+        SignUpView()
     }
     .environment(AppState.preview(sessionState: .loggedOut))
 }

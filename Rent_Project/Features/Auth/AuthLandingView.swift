@@ -29,17 +29,17 @@ struct AuthLandingView: View {
 
             VStack(spacing: 12) {
                 NavigationLink {
-                    LoginView()
+                    SignInView()
                 } label: {
-                    Text("Log In")
+                    Text("Sign In")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
 
                 NavigationLink {
-                    RegisterView()
+                    SignUpView()
                 } label: {
-                    Text("Register")
+                    Text("Sign Up")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)

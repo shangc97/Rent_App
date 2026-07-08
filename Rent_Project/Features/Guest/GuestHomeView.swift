@@ -11,14 +11,14 @@ struct GuestHomeView: View {
     private enum GuestTab: Hashable {
         case listings
         case search
-        case register
+        case signUp
     }
 
     @State private var selectedTab: GuestTab = .listings
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            AllPropertyListingsTab(properties: Property.samples)
+            AllPropertyListingsView(properties: Property.samples)
                 .tabItem {
                     Label("Listings", systemImage: "building.2")
                 }
@@ -30,11 +30,11 @@ struct GuestHomeView: View {
                 }
                 .tag(GuestTab.search)
 
-            RegisterView()
+            SignUpView()
                 .tabItem {
-                    Label("Register", systemImage: "person.badge.plus")
+                    Label("Sign Up", systemImage: "person.badge.plus")
                 }
-                .tag(GuestTab.register)
+                .tag(GuestTab.signUp)
         }
     }
 }
