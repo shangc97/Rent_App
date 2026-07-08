@@ -12,16 +12,6 @@ final class RentalRequestRepository {
     private let database = Firestore.firestore()
     private let COLLECTION_RENTAL_REQUEST = "rentalRequests"
 
-    func fetchAllRentalRequests() async throws -> [RentalRequest] {
-        let snapshot = try await database
-            .collection(COLLECTION_RENTAL_REQUEST)
-            .getDocuments()
-
-        return snapshot.documents.compactMap { document in
-            rentalRequest(from: document)
-        }
-    }
-
     func fetchLandlordRentalRequests(landlordId: String) async throws -> [RentalRequest] {
         let snapshot = try await database
             .collection(COLLECTION_RENTAL_REQUEST)
@@ -50,28 +40,38 @@ final class RentalRequestRepository {
         }
     }
 
-    func addRentalRequest(_ rentalRequest: RentalRequest) async throws {
+    func createRentalRequest(_ rentalRequest: RentalRequest) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)
             .document(rentalRequest.requestId)
             .setData(firestoreData(for: rentalRequest))
     }
 
-    func updateRentalRequest(
-        requestId: String,
-        rentalRequest: RentalRequest
-    ) async throws {
+    func withdrawRentalRequest(requestId: String) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)
             .document(requestId)
-            .updateData(firestoreData(for: rentalRequest))
+            .updateData([
+                "status": RentalRequestStatus.withdrawn.rawValue
+            ])
     }
 
-    func deleteRentalRequest(requestId: String) async throws {
+    func approveRentalRequest(requestId: String) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)
             .document(requestId)
-            .delete()
+            .updateData([
+                "status": RentalRequestStatus.approved.rawValue
+            ])
+    }
+
+    func denyRentalRequest(requestId: String) async throws {
+        try await database
+            .collection(COLLECTION_RENTAL_REQUEST)
+            .document(requestId)
+            .updateData([
+                "status": RentalRequestStatus.rejected.rawValue
+            ])
     }
 
     private func rentalRequest(

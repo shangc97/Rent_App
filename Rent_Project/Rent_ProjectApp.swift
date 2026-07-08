@@ -26,15 +26,19 @@ struct Rent_ProjectApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
     @State private var appState = AppState()
+    @State private var authStore = AuthStore()
     @State private var propertyStore = PropertyStore()
     @State private var rentalRequestStore = RentalRequestStore()
+    @State private var userProfileStore = UserProfileStore()
 
     var body: some Scene {
         WindowGroup {
             RootView()
         }
         .environment(appState)
+        .environment(authStore)
         .environment(propertyStore)
         .environment(rentalRequestStore)
+        .environment(userProfileStore)
     }
 }

@@ -14,27 +14,21 @@ final class AppState {
     var currentUserId: String?
     var currentUserRole: AppUserRole?
 
-    func bootstrapIfNeeded() {
-        guard sessionState == .loading else { return }
-        sessionState = .loggedOut
-    }
-
     func continueAsGuest() {
         currentUserId = nil
         currentUserRole = nil
         sessionState = .guest
     }
 
-    func signIn(as role: AppUserRole) {
+    func setAuthenticatedSession(userId: String, role: AppUserRole) {
+        currentUserId = userId
         currentUserRole = role
-        currentUserId = "demo-\(role.rawValue)"
         sessionState = role == .tenant ? .tenant : .landlord
     }
 
-    func logout() {
+    func showLoggedOut() {
         currentUserId = nil
         currentUserRole = nil
         sessionState = .loggedOut
     }
 }
-

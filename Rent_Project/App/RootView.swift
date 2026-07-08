@@ -9,8 +9,9 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(AppState.self) private var appState
+    @Environment(AuthStore.self) private var authStore
     @Environment(PropertyStore.self) private var propertyStore
-    @Environment(RentalRequestStore.self) private var rentalRequestStore
+    @Environment(UserProfileStore.self) private var userProfileStore
 
     var body: some View {
         Group {
@@ -21,12 +22,9 @@ struct RootView: View {
             }
         }
         .task {
-            appState.bootstrapIfNeeded()
+            await restoreSessionIfNeeded()
             if propertyStore.properties.isEmpty {
                 await propertyStore.loadAllProperties()
-            }
-            if rentalRequestStore.rentalRequests.isEmpty {
-                await rentalRequestStore.loadAllRentalRequests()
             }
         }
         .animation(.default, value: appState.sessionState)
@@ -52,5 +50,28 @@ struct RootView: View {
                 LandlordHomeView()
             }
         }
+    }
+
+    private func restoreSessionIfNeeded() async {
+        guard appState.sessionState == .loading else { return }
+
+        authStore.restoreSession()
+
+        guard let userId = authStore.currentUserId else {
+            appState.showLoggedOut()
+            return
+        }
+
+        await userProfileStore.loadUserProfile(userId: userId)
+
+        guard let currentUserProfile = userProfileStore.currentUserProfile else {
+            appState.showLoggedOut()
+            return
+        }
+
+        appState.setAuthenticatedSession(
+            userId: currentUserProfile.userId,
+            role: currentUserProfile.role
+        )
     }
 }
