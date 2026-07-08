@@ -7,20 +7,24 @@
 
 import SwiftUI
 
+/// Root guest experience that lets unauthenticated users browse listings,
+/// search properties, or move into sign-up.
 struct GuestHomeView: View {
+    /// Tabs available to a guest user inside the main guest tab container.
     private enum GuestTab: Hashable {
         case listings
         case search
         case signUp
     }
 
+    /// Tracks the currently selected guest tab.
     @State private var selectedTab: GuestTab = .listings
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            AllPropertyListingsView(properties: Property.samples)
+            AllPropertyListingsView()
                 .tabItem {
-                    Label("Listings", systemImage: "building.2")
+                    Label("All Listings", systemImage: "square.grid.2x2")
                 }
                 .tag(GuestTab.listings)
 
@@ -37,11 +41,4 @@ struct GuestHomeView: View {
                 .tag(GuestTab.signUp)
         }
     }
-}
-
-#Preview("Guest Home") {
-    NavigationStack {
-        GuestHomeView()
-    }
-    .environment(AppState.preview(sessionState: .guest))
 }
