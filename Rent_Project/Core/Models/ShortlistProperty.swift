@@ -14,22 +14,3 @@ struct ShortlistProperty: Identifiable, Codable, Hashable, Sendable {
 
     var id: String { shortlistPropertyId }
 }
-
-extension ShortlistProperty {
-    static let sampleCondo = ShortlistProperty(
-        shortlistPropertyId: "shortlist-downtown-condo-taylor",
-        tenantId: UserProfile.sampleTenant.userId,
-        propertyId: Property.sampleCondo.propertyId
-    )
-
-    static let sampleTownhouse = ShortlistProperty(
-        shortlistPropertyId: "shortlist-lakeshore-townhouse-taylor",
-        tenantId: UserProfile.sampleTenant.userId,
-        propertyId: Property.sampleTownhouse.propertyId
-    )
-
-    static let samples = [
-        sampleCondo,
-        sampleTownhouse,
-    ]
-}

@@ -33,32 +33,7 @@ enum RentalRequestStatus: String, CaseIterable, Codable, Hashable, Sendable {
         case .approved:
             "Approved"
         case .rejected:
-            "Rejected"
+            "Denied"
         }
     }
-}
-
-extension RentalRequest {
-    static let sampleSubmitted = RentalRequest(
-        requestId: "request-downtown-condo-taylor",
-        propertyId: Property.sampleCondo.propertyId,
-        tenantId: UserProfile.sampleTenant.userId,
-        landlordId: Property.sampleCondo.landlordId,
-        status: .submitted,
-        message: "I am interested in booking a viewing this week and can move in next month."
-    )
-
-    static let sampleApproved = RentalRequest(
-        requestId: "request-lakeshore-townhouse-taylor",
-        propertyId: Property.sampleTownhouse.propertyId,
-        tenantId: UserProfile.sampleTenant.userId,
-        landlordId: Property.sampleTownhouse.landlordId,
-        status: .approved,
-        message: "I have stable income and would love to schedule the next step."
-    )
-
-    static let samples = [
-        sampleSubmitted,
-        sampleApproved,
-    ]
 }

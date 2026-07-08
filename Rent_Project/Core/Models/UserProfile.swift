@@ -37,26 +37,3 @@ struct UserProfile: Identifiable, Codable, Hashable, Sendable {
         return trimmedName.isEmpty ? email : trimmedName
     }
 }
-
-extension UserProfile {
-    static let sampleTenant = UserProfile(
-        userId: "demo-tenant",
-        email: "tenant@example.com",
-        fullName: "Taylor Tenant",
-        role: .tenant,
-        phoneNumber: "647-555-0101"
-    )
-
-    static let sampleLandlord = UserProfile(
-        userId: "demo-landlord",
-        email: "landlord@example.com",
-        fullName: "Logan Landlord",
-        role: .landlord,
-        phoneNumber: "416-555-0123"
-    )
-
-    static let samples = [
-        sampleTenant,
-        sampleLandlord,
-    ]
-}
