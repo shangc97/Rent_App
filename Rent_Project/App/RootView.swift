@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(AppState.self) private var appState
+    @Environment(PropertyStore.self) private var propertyStore
 
     var body: some View {
         Group {
@@ -20,6 +21,9 @@ struct RootView: View {
         }
         .task {
             appState.bootstrapIfNeeded()
+            if propertyStore.properties.isEmpty {
+                await propertyStore.loadAllProperties()
+            }
         }
         .animation(.default, value: appState.sessionState)
     }
