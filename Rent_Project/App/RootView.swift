@@ -10,6 +10,7 @@ import SwiftUI
 struct RootView: View {
     @Environment(AppState.self) private var appState
     @Environment(PropertyStore.self) private var propertyStore
+    @Environment(RentalRequestStore.self) private var rentalRequestStore
 
     var body: some View {
         Group {
@@ -23,6 +24,9 @@ struct RootView: View {
             appState.bootstrapIfNeeded()
             if propertyStore.properties.isEmpty {
                 await propertyStore.loadAllProperties()
+            }
+            if rentalRequestStore.rentalRequests.isEmpty {
+                await rentalRequestStore.loadAllRentalRequests()
             }
         }
         .animation(.default, value: appState.sessionState)

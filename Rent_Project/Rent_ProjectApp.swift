@@ -27,6 +27,7 @@ struct Rent_ProjectApp: App {
 
     @State private var appState = AppState()
     @State private var propertyStore = PropertyStore()
+    @State private var rentalRequestStore = RentalRequestStore()
 
     var body: some Scene {
         WindowGroup {
@@ -34,5 +35,6 @@ struct Rent_ProjectApp: App {
         }
         .environment(appState)
         .environment(propertyStore)
+        .environment(rentalRequestStore)
     }
 }
