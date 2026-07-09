@@ -11,14 +11,9 @@ import Observation
 /// Stores app-wide session state used by the root navigation layer.
 @Observable
 final class AppState {
-    var sessionState: AppSessionState = .loading
     var currentUserId: String?
     var currentUserRole: AppUserRole?
-
-    /// Indicates whether the app currently has a complete authenticated session.
-    var isAuthenticatedSession: Bool {
-        currentUserId != nil && currentUserRole != nil
-    }
+    var sessionState: AppSessionState = .loading
 
     /// Indicates whether the active session belongs to a tenant.
     var isTenantSession: Bool {

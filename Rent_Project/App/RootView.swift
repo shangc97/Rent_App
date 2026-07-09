@@ -23,7 +23,7 @@ struct RootView: View {
             }
         }
         .task {
-            await AppSessionCoordinator.prepareLaunchSessionIfNeeded(
+            await AppSessionCoordinator.resetLaunchSessionToLoggedOut(
                 appState: appState,
                 authStore: authStore,
                 userProfileStore: userProfileStore
@@ -41,17 +41,11 @@ struct RootView: View {
                 AuthLandingView()
             }
         case .guest:
-            NavigationStack {
-                GuestHomeView()
-            }
+            GuestHomeView()
         case .tenant:
-            NavigationStack {
-                TenantHomeView()
-            }
+            TenantHomeView()
         case .landlord:
-            NavigationStack {
-                LandlordHomeView()
-            }
+            LandlordHomeView()
         }
     }
 }

@@ -58,7 +58,7 @@ enum AppSessionCoordinator {
     /// The app now always opens on the auth landing screen after launch, while
     /// remember-me only repopulates the sign-in fields instead of silently
     /// restoring an authenticated session.
-    static func prepareLaunchSessionIfNeeded(
+    static func resetLaunchSessionToLoggedOut(
         appState: AppState,
         authStore: AuthStore,
         userProfileStore: UserProfileStore
@@ -88,42 +88,6 @@ enum AppSessionCoordinator {
             rentalRequestStore: rentalRequestStore
         )
         appState.continueAsGuest()
-    }
-
-    /// Stores or clears the remembered credentials used to prefill sign-in.
-    static func updateRememberedCredentials(
-        userId: String,
-        email: String,
-        password: String,
-        shouldRememberUser: Bool
-    ) {
-        if shouldRememberUser {
-            clearRememberedCredentials()
-            UserDefaults.standard.set(userId, forKey: rememberedUserIdKey)
-            UserDefaults.standard.set(email, forKey: rememberedUserEmailKey)
-            saveRememberedPassword(password, for: userId)
-        } else {
-            clearRememberedCredentials()
-        }
-    }
-
-    /// Returns remembered credentials when the user previously opted in.
-    static func rememberedCredentials() -> RememberedCredentials? {
-        guard
-            let userId = UserDefaults.standard.string(forKey: rememberedUserIdKey),
-            let email = UserDefaults.standard.string(
-                forKey: rememberedUserEmailKey
-            ),
-            let password = rememberedPassword(for: userId)
-        else {
-            return nil
-        }
-
-        return RememberedCredentials(
-            userId: userId,
-            email: email,
-            password: password
-        )
     }
 
     /// Signs out the current user and clears user-scoped data from shared stores.
@@ -161,6 +125,44 @@ enum AppSessionCoordinator {
         userProfileStore.clearUserProfile()
         shortlistPropertyStore.clearShortlist()
         rentalRequestStore.clearRentalRequests()
+    }
+
+    /// Returns remembered credentials when the user previously opted in.
+    static func rememberedCredentials() -> RememberedCredentials? {
+        guard
+            let userId = UserDefaults.standard.string(
+                forKey: rememberedUserIdKey
+            ),
+            let email = UserDefaults.standard.string(
+                forKey: rememberedUserEmailKey
+            ),
+            let password = rememberedPassword(for: userId)
+        else {
+            return nil
+        }
+
+        return RememberedCredentials(
+            userId: userId,
+            email: email,
+            password: password
+        )
+    }
+
+    /// Stores or clears the remembered credentials used to prefill sign-in.
+    static func updateRememberedCredentials(
+        userId: String,
+        email: String,
+        password: String,
+        shouldRememberUser: Bool
+    ) {
+        if shouldRememberUser {
+            clearRememberedCredentials()
+            UserDefaults.standard.set(userId, forKey: rememberedUserIdKey)
+            UserDefaults.standard.set(email, forKey: rememberedUserEmailKey)
+            saveRememberedPassword(password, for: userId)
+        } else {
+            clearRememberedCredentials()
+        }
     }
 
     /// Removes any remembered credentials from persistent storage.
