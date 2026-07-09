@@ -25,6 +25,7 @@ struct LandlordHomeView: View {
     @State private var selectedTab: LandlordTab = .allListings
     @State private var isPresentingAddProperty = false
 
+    /// Switches between landlord tabs and exposes the add-listing entry point.
     var body: some View {
         Group {
             if let landlordId = appState.currentLandlordId {

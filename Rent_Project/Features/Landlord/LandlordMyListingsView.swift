@@ -15,6 +15,7 @@ struct LandlordMyListingsView: View {
     @State private var pendingUnlisting: Property?
     @State private var selectedStatusFilter: PropertyStatus = .listed
 
+    /// Displays the landlord's filtered listing set and unlisting confirmation flow.
     var body: some View {
         List {
             filterSection
@@ -79,6 +80,7 @@ struct LandlordMyListingsView: View {
         }
     }
 
+    /// Renders the segmented property-status picker shown above the listing results.
     private var filterSection: some View {
         Section {
             Picker("Status", selection: $selectedStatusFilter) {
@@ -91,6 +93,7 @@ struct LandlordMyListingsView: View {
         }
     }
 
+    /// Bridges the optional pending-unlist property into a Boolean alert binding.
     private var isUnlistAlertPresented: Binding<Bool> {
         Binding(
             get: { pendingUnlisting != nil },
@@ -102,16 +105,19 @@ struct LandlordMyListingsView: View {
         )
     }
 
+    /// Returns the section title for the currently selected listing status.
     private var sectionTitle: String {
         "\(selectedStatusFilter.rawValue.capitalized) Listings"
     }
 
+    /// Returns the empty-state title for the landlord's current listing filter.
     private var emptyStateTitle: String {
         landlordProperties.isEmpty
             ? "No Listings Yet"
             : "No \(selectedStatusFilter.rawValue.capitalized) Listings"
     }
 
+    /// Returns the empty-state message for the landlord's current listing filter.
     private var emptyStateMessage: String {
         if landlordProperties.isEmpty {
             return "Tap the add button in the top-right corner to create your first property listing."

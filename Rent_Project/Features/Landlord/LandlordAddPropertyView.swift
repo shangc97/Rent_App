@@ -68,6 +68,7 @@ struct LandlordAddPropertyView: View {
         _imageURL = State(initialValue: propertyToEdit?.imageURL ?? "")
     }
 
+    /// Renders the landlord property form along with the save confirmation flow.
     var body: some View {
         Form {
             Section("Listing Details") {
@@ -135,18 +136,22 @@ struct LandlordAddPropertyView: View {
         }
     }
 
+    /// Returns the navigation title for either add or edit mode.
     private var navigationTitle: String {
         propertyToEdit == nil ? "Add Property" : "Edit Property"
     }
 
+    /// Returns the primary save action title for the current form mode.
     private var saveButtonTitle: String {
         propertyToEdit == nil ? "Save" : "Update"
     }
 
+    /// Returns the confirmation alert title shown before persisting the form.
     private var saveConfirmationTitle: String {
         propertyToEdit == nil ? "Save Property?" : "Update Property?"
     }
 
+    /// Returns the confirmation alert message for the current save action.
     private var saveConfirmationMessage: String {
         propertyToEdit == nil
             ? "Please confirm that you want to create this property listing."

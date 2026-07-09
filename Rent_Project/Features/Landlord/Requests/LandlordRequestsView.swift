@@ -15,6 +15,7 @@ struct LandlordRequestsView: View {
     @Environment(RentalRequestStore.self) private var rentalRequestStore
     @State private var selectedSection: RequestSection = .pending
 
+    /// Renders the landlord request dashboard with segmented filtering by request state.
     var body: some View {
         List {
             Section {
@@ -27,31 +28,27 @@ struct LandlordRequestsView: View {
                 .pickerStyle(.segmented)
             }
 
-            if filteredRequests.isEmpty {
-                EmptyStateView(
-                    title: selectedSection.emptyStateTitle,
-                    message: selectedSection.emptyStateMessage,
-                    systemImage: "tray"
-                )
-            } else {
-                Section {
-                    ForEach(filteredRequests) { request in
-                        if let property = property(for: request) {
-                            let tenant = tenant(for: request)
-
-                            if selectedSection == .pending {
-                                LandlordPendingRequestRowView(
-                                    property: property,
-                                    request: request,
-                                    tenant: tenant
-                                )
-                            } else {
-                                LandlordRequestHistoryRowView(
-                                    property: property,
-                                    request: request,
-                                    tenant: tenant
-                                )
-                            }
+            Section {
+                if requestListItems.isEmpty {
+                    EmptyStateView(
+                        title: selectedSection.emptyStateTitle,
+                        message: selectedSection.emptyStateMessage,
+                        systemImage: "tray"
+                    )
+                } else {
+                    ForEach(requestListItems) { item in
+                        if selectedSection == .pending {
+                            LandlordPendingRequestRowView(
+                                property: item.property,
+                                request: item.request,
+                                tenant: tenant(for: item.request)
+                            )
+                        } else {
+                            LandlordRequestHistoryRowView(
+                                property: item.property,
+                                request: item.request,
+                                tenant: tenant(for: item.request)
+                            )
                         }
                     }
                 }
@@ -140,6 +137,18 @@ struct LandlordRequestsView: View {
         landlordRequests.filter { selectedSection.includes($0.status) }
     }
 
+    /// Joins each filtered request with its matching property for row rendering.
+    private var requestListItems: [RequestListItem] {
+        filteredRequests.compactMap { request in
+            guard let property = property(for: request) else { return nil }
+
+            return RequestListItem(
+                request: request,
+                property: property
+            )
+        }
+    }
+
     /// Looks up the property associated with a landlord request.
     private func property(for request: RentalRequest) -> Property? {
         propertyStore.properties.first { $0.propertyId == request.propertyId }
@@ -155,5 +164,13 @@ struct LandlordRequestsView: View {
             role: .tenant,
             phoneNumber: ""
         )
+    }
+
+    /// Wraps a request and its resolved property into a single list row model.
+    private struct RequestListItem: Identifiable {
+        let request: RentalRequest
+        let property: Property
+
+        var id: String { request.id }
     }
 }
