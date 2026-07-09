@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+/// Holds the active user profile and exposes profile loading and update actions for the UI.
 @MainActor
 @Observable
 final class UserProfileStore {
@@ -25,6 +26,7 @@ final class UserProfileStore {
         self.userProfileRepository = userProfileRepository
     }
 
+    /// Creates a new user profile document and mirrors it into local state.
     func createUserProfile(_ userProfile: UserProfile) async {
         isLoading = true
         errorMessage = nil
@@ -39,9 +41,11 @@ final class UserProfileStore {
         isLoading = false
     }
 
+    /// Loads the user profile for the supplied user id.
     func loadUserProfile(userId: String) async {
         isLoading = true
         errorMessage = nil
+        currentUserProfile = nil
 
         do {
             currentUserProfile = try await userProfileRepository.fetchUserProfile(
@@ -54,6 +58,7 @@ final class UserProfileStore {
         isLoading = false
     }
 
+    /// Updates an existing user profile document and local state.
     func updateUserProfile(_ userProfile: UserProfile) async {
         isLoading = true
         errorMessage = nil
@@ -68,6 +73,7 @@ final class UserProfileStore {
         isLoading = false
     }
 
+    /// Clears the currently cached user profile from memory.
     func clearUserProfile() {
         currentUserProfile = nil
         errorMessage = nil

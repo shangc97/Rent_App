@@ -8,11 +8,14 @@
 import Foundation
 import Observation
 
+/// Coordinates tenant and landlord request actions while keeping request state in sync for the UI.
 @MainActor
 @Observable
 final class RentalRequestStore {
+    /// Defines validation errors surfaced when a user attempts a request action they do not own.
     private enum RentalRequestStoreError: LocalizedError {
         case tenantCanOnlySubmitOwnRequest
+        case tenantAlreadyHasSubmittedRequestForProperty
         case tenantCanOnlyWithdrawOwnSubmittedRequest
         case landlordCanOnlyApproveOwnSubmittedRequest
         case landlordCanOnlyDenyOwnSubmittedRequest
@@ -21,6 +24,8 @@ final class RentalRequestStore {
             switch self {
             case .tenantCanOnlySubmitOwnRequest:
                 "A tenant can only submit a new request for their own account."
+            case .tenantAlreadyHasSubmittedRequestForProperty:
+                "You already have a pending request for this property."
             case .tenantCanOnlyWithdrawOwnSubmittedRequest:
                 "A tenant can only withdraw their own submitted request."
             case .landlordCanOnlyApproveOwnSubmittedRequest:
@@ -45,6 +50,7 @@ final class RentalRequestStore {
         self.rentalRequestRepository = rentalRequestRepository
     }
 
+    /// Loads all requests received by the specified landlord.
     func loadLandlordRentalRequests(landlordId: String) async {
         isLoading = true
         errorMessage = nil
@@ -59,6 +65,7 @@ final class RentalRequestStore {
         isLoading = false
     }
 
+    /// Loads all requests submitted by the specified tenant.
     func loadTenantRentalRequests(tenantId: String) async {
         isLoading = true
         errorMessage = nil
@@ -73,10 +80,36 @@ final class RentalRequestStore {
         isLoading = false
     }
 
+    /// Checks whether the tenant already has a pending request for the given
+    /// property before opening the final submission confirmation.
+    func tenantHasSubmittedRentalRequest(
+        propertyId: String,
+        tenantId: String
+    ) async -> Bool? {
+        isLoading = true
+        errorMessage = nil
+
+        defer {
+            isLoading = false
+        }
+
+        do {
+            return try await hasSubmittedRentalRequest(
+                propertyId: propertyId,
+                tenantId: tenantId
+            )
+        } catch {
+            errorMessage = error.localizedDescription
+            return nil
+        }
+    }
+
+    /// Validates and submits a new rental request for the active tenant.
+    @discardableResult
     func submitRentalRequest(
         _ rentalRequest: RentalRequest,
         tenantId: String
-    ) async {
+    ) async -> Bool {
         isLoading = true
         errorMessage = nil
 
@@ -87,19 +120,34 @@ final class RentalRequestStore {
                 throw RentalRequestStoreError.tenantCanOnlySubmitOwnRequest
             }
 
+            let alreadyHasSubmittedRequest = try await hasSubmittedRentalRequest(
+                propertyId: rentalRequest.propertyId,
+                tenantId: tenantId
+            )
+
+            guard !alreadyHasSubmittedRequest else {
+                throw RentalRequestStoreError
+                    .tenantAlreadyHasSubmittedRequestForProperty
+            }
+
             try await rentalRequestRepository.createRentalRequest(rentalRequest)
             rentalRequests.insert(rentalRequest, at: 0)
+            isLoading = false
+            return true
         } catch {
             errorMessage = error.localizedDescription
         }
 
         isLoading = false
+        return false
     }
 
+    /// Marks the tenant's submitted request as withdrawn.
+    @discardableResult
     func withdrawRentalRequest(
         _ rentalRequest: RentalRequest,
         tenantId: String
-    ) async {
+    ) async -> Bool {
         isLoading = true
         errorMessage = nil
 
@@ -112,19 +160,24 @@ final class RentalRequestStore {
             }
 
             try await rentalRequestRepository.withdrawRentalRequest(
-                requestId: rentalRequest.requestId
+                requestId: rentalRequest.requestId,
+                message: rentalRequest.message
             )
 
             var updatedRentalRequest = rentalRequest
             updatedRentalRequest.status = .withdrawn
             replaceOrInsertRentalRequest(updatedRentalRequest)
+            isLoading = false
+            return true
         } catch {
             errorMessage = error.localizedDescription
         }
 
         isLoading = false
+        return false
     }
 
+    /// Approves a submitted request that belongs to the active landlord.
     func approveRentalRequest(
         _ rentalRequest: RentalRequest,
         landlordId: String
@@ -154,6 +207,7 @@ final class RentalRequestStore {
         isLoading = false
     }
 
+    /// Rejects a submitted request that belongs to the active landlord.
     func denyRentalRequest(
         _ rentalRequest: RentalRequest,
         landlordId: String
@@ -183,6 +237,7 @@ final class RentalRequestStore {
         isLoading = false
     }
 
+    /// Clears the locally cached request list.
     func clearRentalRequests() {
         rentalRequests = []
         errorMessage = nil
@@ -195,6 +250,19 @@ final class RentalRequestStore {
             rentalRequests[index] = rentalRequest
         } else {
             rentalRequests.insert(rentalRequest, at: 0)
+        }
+    }
+
+    private func hasSubmittedRentalRequest(
+        propertyId: String,
+        tenantId: String
+    ) async throws -> Bool {
+        let tenantRentalRequests = try await rentalRequestRepository
+            .fetchTenantRentalRequests(tenantId: tenantId)
+
+        return tenantRentalRequests.contains { rentalRequest in
+            rentalRequest.propertyId == propertyId
+                && rentalRequest.status == .submitted
         }
     }
 }

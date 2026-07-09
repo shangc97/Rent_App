@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+/// Tracks authentication UI state and delegates account actions to `AuthRepository`.
 @MainActor
 @Observable
 final class AuthStore {
@@ -25,11 +26,13 @@ final class AuthStore {
         self.authRepository = authRepository
     }
 
+    /// Restores the current Firebase session into observable app state.
     func restoreSession() {
         errorMessage = nil
         currentUserId = authRepository.currentUserId()
     }
 
+    /// Creates an account and stores the authenticated user's id on success.
     func createAccount(email: String, password: String) async {
         isLoading = true
         errorMessage = nil
@@ -46,6 +49,7 @@ final class AuthStore {
         isLoading = false
     }
 
+    /// Signs in an existing user and stores the authenticated user's id on success.
     func signIn(email: String, password: String) async {
         isLoading = true
         errorMessage = nil
@@ -62,6 +66,7 @@ final class AuthStore {
         isLoading = false
     }
 
+    /// Clears the Firebase session and local auth state.
     func signOut() {
         errorMessage = nil
 

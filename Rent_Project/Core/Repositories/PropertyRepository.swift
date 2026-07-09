@@ -8,10 +8,15 @@
 import FirebaseFirestore
 import Foundation
 
+/// Persists property listings and runs Firestore queries used by browse and landlord flows.
 final class PropertyRepository {
-    private let database = Firestore.firestore()
     private let COLLECTION_PROPERTY = "properties"
 
+    private var database: Firestore {
+        Firestore.firestore()
+    }
+
+    /// Fetches every property document from Firestore.
     func fetchAllProperties() async throws -> [Property] {
         let snapshot = try await database
             .collection(COLLECTION_PROPERTY)
@@ -22,6 +27,7 @@ final class PropertyRepository {
         }
     }
 
+    /// Fetches only properties that are currently listed.
     func fetchListedProperties() async throws -> [Property] {
         let snapshot = try await database
             .collection(COLLECTION_PROPERTY)
@@ -36,6 +42,7 @@ final class PropertyRepository {
         }
     }
 
+    /// Fetches all properties owned by the specified landlord.
     func fetchLandlordProperties(landlordId: String) async throws -> [Property] {
         let snapshot = try await database
             .collection(COLLECTION_PROPERTY)
@@ -50,6 +57,7 @@ final class PropertyRepository {
         }
     }
 
+    /// Writes a new property document using the model's existing id.
     func addProperty(_ property: Property) async throws {
         try await database
             .collection(COLLECTION_PROPERTY)
@@ -57,6 +65,7 @@ final class PropertyRepository {
             .setData(firestoreData(for: property))
     }
 
+    /// Updates the Firestore document for an existing property.
     func updateProperty(propertyId: String, property: Property) async throws {
         try await database
             .collection(COLLECTION_PROPERTY)
@@ -64,6 +73,7 @@ final class PropertyRepository {
             .updateData(firestoreData(for: property))
     }
 
+    /// Deletes a property document from Firestore.
     func deleteProperty(propertyId: String) async throws {
         try await database
             .collection(COLLECTION_PROPERTY)

@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+/// Manages the in-memory property collection and delegates persistence to `PropertyRepository`.
 @MainActor
 @Observable
 final class PropertyStore {
@@ -25,6 +26,7 @@ final class PropertyStore {
         self.propertyRepository = propertyRepository
     }
 
+    /// Loads every property into local state.
     func loadAllProperties() async {
         isLoading = true
         errorMessage = nil
@@ -38,6 +40,13 @@ final class PropertyStore {
         isLoading = false
     }
 
+    /// Loads all properties once when the store has not been populated yet.
+    func loadAllPropertiesIfNeeded() async {
+        guard properties.isEmpty, !isLoading else { return }
+        await loadAllProperties()
+    }
+
+    /// Loads only properties whose status is currently listed.
     func loadListedProperties() async {
         isLoading = true
         errorMessage = nil
@@ -51,6 +60,7 @@ final class PropertyStore {
         isLoading = false
     }
 
+    /// Loads all properties that belong to the given landlord.
     func loadLandlordProperties(landlordId: String) async {
         isLoading = true
         errorMessage = nil
@@ -66,6 +76,7 @@ final class PropertyStore {
         isLoading = false
     }
 
+    /// Persists a new property and inserts it into local state on success.
     func addProperty(_ property: Property) async {
         isLoading = true
         errorMessage = nil
@@ -80,6 +91,7 @@ final class PropertyStore {
         isLoading = false
     }
 
+    /// Persists updates for an existing property and refreshes the matching local item.
     func updateProperty(propertyId: String, property: Property) async {
         isLoading = true
         errorMessage = nil
@@ -102,6 +114,7 @@ final class PropertyStore {
         isLoading = false
     }
 
+    /// Deletes a property from Firestore and removes it from local state.
     func deleteProperty(propertyId: String) async {
         isLoading = true
         errorMessage = nil

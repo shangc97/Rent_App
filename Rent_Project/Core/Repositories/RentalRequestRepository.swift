@@ -8,10 +8,15 @@
 import FirebaseFirestore
 import Foundation
 
+/// Persists rental request documents and request status changes in Firestore.
 final class RentalRequestRepository {
-    private let database = Firestore.firestore()
     private let COLLECTION_RENTAL_REQUEST = "rentalRequests"
 
+    private var database: Firestore {
+        Firestore.firestore()
+    }
+
+    /// Fetches all rental requests received by a landlord.
     func fetchLandlordRentalRequests(landlordId: String) async throws -> [RentalRequest] {
         let snapshot = try await database
             .collection(COLLECTION_RENTAL_REQUEST)
@@ -26,6 +31,7 @@ final class RentalRequestRepository {
         }
     }
 
+    /// Fetches all rental requests submitted by a tenant.
     func fetchTenantRentalRequests(tenantId: String) async throws -> [RentalRequest] {
         let snapshot = try await database
             .collection(COLLECTION_RENTAL_REQUEST)
@@ -40,6 +46,7 @@ final class RentalRequestRepository {
         }
     }
 
+    /// Creates a new rental request document.
     func createRentalRequest(_ rentalRequest: RentalRequest) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)
@@ -47,15 +54,21 @@ final class RentalRequestRepository {
             .setData(firestoreData(for: rentalRequest))
     }
 
-    func withdrawRentalRequest(requestId: String) async throws {
+    /// Marks a submitted request as withdrawn and stores the tenant's withdrawal message.
+    func withdrawRentalRequest(
+        requestId: String,
+        message: String
+    ) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)
             .document(requestId)
             .updateData([
-                "status": RentalRequestStatus.withdrawn.rawValue
+                "status": RentalRequestStatus.withdrawn.rawValue,
+                "message": message,
             ])
     }
 
+    /// Marks a request as approved.
     func approveRentalRequest(requestId: String) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)
@@ -65,6 +78,7 @@ final class RentalRequestRepository {
             ])
     }
 
+    /// Marks a request as rejected.
     func denyRentalRequest(requestId: String) async throws {
         try await database
             .collection(COLLECTION_RENTAL_REQUEST)

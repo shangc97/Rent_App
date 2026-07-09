@@ -8,10 +8,15 @@
 import FirebaseFirestore
 import Foundation
 
+/// Persists and loads user profile documents from the Firestore `users` collection.
 final class UserProfileRepository {
-    private let database = Firestore.firestore()
     private let COLLECTION_USER = "users"
 
+    private var database: Firestore {
+        Firestore.firestore()
+    }
+
+    /// Creates or overwrites the Firestore document for the supplied user profile.
     func createUserProfile(_ userProfile: UserProfile) async throws {
         try await database
             .collection(COLLECTION_USER)
@@ -19,6 +24,7 @@ final class UserProfileRepository {
             .setData(firestoreData(for: userProfile))
     }
 
+    /// Fetches a single user profile document by user id.
     func fetchUserProfile(userId: String) async throws -> UserProfile? {
         let document =
             try await database
@@ -37,6 +43,7 @@ final class UserProfileRepository {
         return userProfile(from: data, userId: document.documentID)
     }
 
+    /// Updates the stored fields for an existing user profile document.
     func updateUserProfile(_ userProfile: UserProfile) async throws {
         try await database
             .collection(COLLECTION_USER)
