@@ -42,6 +42,7 @@ struct AuthLandingView: View {
             ?? userProfileStore.errorMessage
     }
 
+    /// Lays out the sign-in card and guest entry point on the shared auth screen.
     var body: some View {
         ZStack {
             backgroundView

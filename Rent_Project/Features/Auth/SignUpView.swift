@@ -52,6 +52,7 @@ struct SignUpView: View {
             ?? userProfileStore.errorMessage
     }
 
+    /// Renders the sign-up form, role picker, and navigation back to sign-in.
     var body: some View {
         Form {
             profileBasicsSection
