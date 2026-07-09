@@ -7,94 +7,61 @@
 
 import SwiftUI
 
+/// Hosts the shared property details experience and switches the trailing
+/// toolbar actions based on the current user's role.
 struct PropertyDetailsView: View {
     @Environment(AppState.self) private var appState
+    @Environment(PropertyStore.self) private var propertyStore
+    @Environment(ShortlistPropertyStore.self) private var shortlistPropertyStore
 
     let property: Property
-    @State private var propertyStatus: PropertyStatus
-    @State private var isShortlisted = false
-    @State private var hasSubmittedRequest = false
-
-    init(property: Property = .sample) {
-        self.property = property
-        _propertyStatus = State(initialValue: property.status)
-    }
 
     var body: some View {
         List {
-            PropertyDetailsContentView(
-                property: displayProperty
-            )
-
-            roleSpecificActionsSection
+            PropertyDetailsInfoView(property: currentProperty)
         }
         .navigationTitle("Property Details")
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: appState.currentTenantId) {
+            guard let currentTenantId = appState.currentTenantId else { return }
+
+            await shortlistPropertyStore.loadTenantShortlist(
+                tenantId: currentTenantId
+            )
+        }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                ShareLink(
-                    item: displayProperty.shareSummary,
-                    subject: Text(displayProperty.title),
-                    message: Text("Sharing a property listing")
-                ) {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                .accessibilityLabel("Share property")
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                shareButton
+                roleSpecificSecondaryToolbarButton
             }
         }
     }
 
-    private var displayProperty: Property {
-        var property = property
-        property.status = propertyStatus
-        return property
+    private var shareButton: some View {
+        ShareLink(
+            item: currentProperty.shareSummary,
+            subject: Text(currentProperty.title),
+            message: Text("Sharing a property listing")
+        ) {
+            Image(systemName: "square.and.arrow.up")
+        }
     }
 
     @ViewBuilder
-    private var roleSpecificActionsSection: some View {
-        switch appState.currentUserRole {
-        case .tenant:
-            TenantPropertyActionsView(
-                isShortlisted: $isShortlisted,
-                hasSubmittedRequest: $hasSubmittedRequest
-            )
-        case .landlord:
-            LandlordPropertyActionsView(status: $propertyStatus)
-        case .none:
-            GuestPropertyActionsView()
+    private var roleSpecificSecondaryToolbarButton: some View {
+        if let role = appState.currentUserRole {
+            switch role {
+            case .tenant:
+                TenantPropertyToolbarActionsView(property: currentProperty)
+            case .landlord:
+                LandlordPropertyToolbarActionsView(property: currentProperty)
+            }
         }
     }
-}
 
-//#Preview("Guest Property Details") {
-//    NavigationStack {
-//        PropertyDetailsView(property: .sample)
-//    }
-//    .environment(AppState.preview(sessionState: .guest))
-//}
-//
-//#Preview("Tenant Property Details") {
-//    NavigationStack {
-//        PropertyDetailsView(property: .sample)
-//    }
-//    .environment(
-//        AppState.preview(
-//            sessionState: .tenant,
-//            currentUserRole: .tenant,
-//            currentUserId: "demo-tenant"
-//        )
-//    )
-//}
-//
-//#Preview("Landlord Property Details") {
-//    NavigationStack {
-//        PropertyDetailsView(property: .sample)
-//    }
-//    .environment(
-//        AppState.preview(
-//            sessionState: .landlord,
-//            currentUserRole: .landlord,
-//            currentUserId: "demo-landlord"
-//        )
-//    )
-//}
+    private var currentProperty: Property {
+        propertyStore.properties.first(where: {
+            $0.propertyId == property.propertyId
+        }) ?? property
+    }
+}
