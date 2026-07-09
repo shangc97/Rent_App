@@ -15,8 +15,10 @@ struct AuthLandingView: View {
     @Environment(ShortlistPropertyStore.self) private var shortlistPropertyStore
     @Environment(RentalRequestStore.self) private var rentalRequestStore
     @Environment(UserProfileStore.self) private var userProfileStore
+    @FocusState private var isPasswordFieldFocused: Bool
     @State private var email = ""
     @State private var password = ""
+    @State private var isPasswordVisible = false
     @State private var rememberMe = false
     @State private var hasLoadedRememberedCredentials = false
     @State private var localErrorMessage: String?
@@ -287,7 +289,7 @@ struct AuthLandingView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
                     .stroke(Color.white.opacity(0.55), lineWidth: 1)
-                }
+            }
         }
     }
 
@@ -377,7 +379,7 @@ struct AuthLandingView: View {
         title: String,
         placeholder: String,
         systemImage: String,
-        ) -> some View {
+    ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.caption.weight(.semibold))
@@ -434,7 +436,25 @@ struct AuthLandingView: View {
         systemImage: String
     ) -> some View {
         inputFieldRow(systemImage: systemImage) {
-            SecureField(placeholder, text: $password)
+            Group {
+                if isPasswordVisible {
+                    TextField(placeholder, text: $password)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                } else {
+                    SecureField(placeholder, text: $password)
+                }
+            }
+            .focused($isPasswordFieldFocused)
+
+            Button {
+                isPasswordVisible.toggle()
+                isPasswordFieldFocused = true
+            } label: {
+                Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -496,8 +516,10 @@ struct AuthLandingView: View {
 
         hasLoadedRememberedCredentials = true
 
-        guard let rememberedCredentials = AppSessionCoordinator
-            .rememberedCredentials()
+        guard
+            let rememberedCredentials =
+                AppSessionCoordinator
+                .rememberedCredentials()
         else {
             rememberMe = false
             return
