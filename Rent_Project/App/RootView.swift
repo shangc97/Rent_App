@@ -7,10 +7,11 @@
 
 import SwiftUI
 
+/// The single root entry point that switches between loading, auth, guest,
+/// tenant, and landlord app flows.
 struct RootView: View {
     @Environment(AppState.self) private var appState
     @Environment(AuthStore.self) private var authStore
-    @Environment(PropertyStore.self) private var propertyStore
     @Environment(UserProfileStore.self) private var userProfileStore
 
     var body: some View {
@@ -22,14 +23,16 @@ struct RootView: View {
             }
         }
         .task {
-            await restoreSessionIfNeeded()
-            if propertyStore.properties.isEmpty {
-                await propertyStore.loadAllProperties()
-            }
+            await AppSessionCoordinator.prepareLaunchSessionIfNeeded(
+                appState: appState,
+                authStore: authStore,
+                userProfileStore: userProfileStore
+            )
         }
         .animation(.default, value: appState.sessionState)
     }
 
+    /// Resolves the appropriate top-level navigation stack for the current session.
     @ViewBuilder
     private var postLoadingView: some View {
         switch appState.sessionState {
@@ -50,28 +53,5 @@ struct RootView: View {
                 LandlordHomeView()
             }
         }
-    }
-
-    private func restoreSessionIfNeeded() async {
-        guard appState.sessionState == .loading else { return }
-
-        authStore.restoreSession()
-
-        guard let userId = authStore.currentUserId else {
-            appState.showLoggedOut()
-            return
-        }
-
-        await userProfileStore.loadUserProfile(userId: userId)
-
-        guard let currentUserProfile = userProfileStore.currentUserProfile else {
-            appState.showLoggedOut()
-            return
-        }
-
-        appState.setAuthenticatedSession(
-            userId: currentUserProfile.userId,
-            role: currentUserProfile.role
-        )
     }
 }

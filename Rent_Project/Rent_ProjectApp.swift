@@ -14,7 +14,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication
             .LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        FirebaseApp.configure()
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
 
         return true
     }
@@ -22,13 +24,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct Rent_ProjectApp: App {
-    // register app delegate for Firebase setup
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
     @State private var appState = AppState()
     @State private var authStore = AuthStore()
     @State private var propertyStore = PropertyStore()
     @State private var rentalRequestStore = RentalRequestStore()
+    @State private var shortlistPropertyStore = ShortlistPropertyStore()
     @State private var userProfileStore = UserProfileStore()
 
     var body: some Scene {
@@ -39,6 +41,7 @@ struct Rent_ProjectApp: App {
         .environment(authStore)
         .environment(propertyStore)
         .environment(rentalRequestStore)
+        .environment(shortlistPropertyStore)
         .environment(userProfileStore)
     }
 }
