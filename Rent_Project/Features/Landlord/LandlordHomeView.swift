@@ -7,54 +7,89 @@
 
 import SwiftUI
 
+/// Hosts the landlord-facing tab navigation for browsing, listing management,
+/// request review, property search, and profile access.
 struct LandlordHomeView: View {
+    @Environment(AppState.self) private var appState
+    @Environment(PropertyStore.self) private var propertyStore
+
+    /// Defines the tabs available in the landlord home experience.
     private enum LandlordTab: Hashable {
-        case listings
+        case allListings
+        case myListings
         case requests
         case search
         case profile
     }
 
-    @State private var selectedTab: LandlordTab = .listings
+    @State private var selectedTab: LandlordTab = .allListings
+    @State private var isPresentingAddProperty = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            LandlordPropertyListingsTab()
-                .tabItem {
-                    Label("Listings", systemImage: "building.2")
-                }
-                .tag(LandlordTab.listings)
+        Group {
+            if let landlordId = appState.currentLandlordId {
+                TabView(selection: $selectedTab) {
+                    AllPropertyListingsView()
+                        .tabItem {
+                            Label("All Listings", systemImage: "square.grid.2x2")
+                        }
+                        .tag(LandlordTab.allListings)
 
-            LandlordRequestsTab()
-                .tabItem {
-                    Label("Requests", systemImage: "envelope")
-                }
-                .tag(LandlordTab.requests)
+                    LandlordMyListingsView(
+                        landlordId: landlordId
+                    )
+                    .tabItem {
+                        Label("My Listings", systemImage: "building.2")
+                    }
+                    .tag(LandlordTab.myListings)
 
-            PropertySearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
-                .tag(LandlordTab.search)
+                    LandlordRequestsView()
+                        .tabItem {
+                            Label("Requests", systemImage: "envelope")
+                        }
+                        .tag(LandlordTab.requests)
 
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
+                    PropertySearchView()
+                        .tabItem {
+                            Label("Search", systemImage: "magnifyingglass")
+                        }
+                        .tag(LandlordTab.search)
+
+                    ProfileView()
+                        .tabItem {
+                            Label("Profile", systemImage: "person.crop.circle")
+                        }
+                        .tag(LandlordTab.profile)
                 }
-                .tag(LandlordTab.profile)
+                .toolbar {
+                    if selectedTab == .myListings {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                isPresentingAddProperty = true
+                            } label: {
+                                Label("Add Property", systemImage: "plus")
+                            }
+                        }
+                    }
+                }
+                .sheet(isPresented: $isPresentingAddProperty) {
+                    NavigationStack {
+                        LandlordAddPropertyView(landlordId: landlordId) { property in
+                            Task {
+                                await propertyStore.addProperty(property)
+                            }
+                        }
+                    }
+                }
+            } else {
+                ContentUnavailableView(
+                    "No Landlord Session",
+                    systemImage: "person.crop.circle.badge.exclamationmark",
+                    description: Text(
+                        "Sign in as a landlord to manage listings and requests."
+                    )
+                )
+            }
         }
     }
-}
-
-#Preview("Landlord Home") {
-    NavigationStack {
-        LandlordHomeView()
-    }
-    .environment(
-        AppState.preview(
-            sessionState: .landlord,
-            currentUserRole: .landlord,
-            currentUserId: "demo-landlord"
-        )
-    )
 }
