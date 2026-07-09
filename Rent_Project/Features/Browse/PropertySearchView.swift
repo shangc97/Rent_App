@@ -13,6 +13,7 @@ struct PropertySearchView: View {
     @Environment(PropertyStore.self) private var propertyStore
     @State private var userInput = ""
 
+    /// Lays out the search field and the independently scrollable search results.
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 16) {
