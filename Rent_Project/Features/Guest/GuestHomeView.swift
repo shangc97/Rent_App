@@ -2,7 +2,7 @@
 //  GuestHomeView.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-06.
+//  Created by Chuhan Shang on 2026-07-01.
 //
 
 import SwiftUI
@@ -22,19 +22,25 @@ struct GuestHomeView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            AllPropertyListingsView()
+            NavigationStack {
+                AllPropertyListingsView()
+            }
                 .tabItem {
                     Label("All Listings", systemImage: "square.grid.2x2")
                 }
                 .tag(GuestTab.listings)
 
-            PropertySearchView()
+            NavigationStack {
+                PropertySearchView()
+            }
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }
                 .tag(GuestTab.search)
 
-            SignUpView()
+            NavigationStack {
+                SignUpView()
+            }
                 .tabItem {
                     Label("Sign Up", systemImage: "person.badge.plus")
                 }

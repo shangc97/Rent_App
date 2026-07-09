@@ -2,7 +2,7 @@
 //  ShortlistPropertyRepository.swift
 //  Rent_Project
 //
-//  Created by Codex on 2026-07-08.
+//  Created by Chuhan Shang on 2026-07-05.
 //
 
 import FirebaseFirestore
@@ -60,9 +60,6 @@ final class ShortlistPropertyRepository {
             let tenantId = data["tenantId"] as? String,
             let propertyId = data["propertyId"] as? String
         else {
-            print(
-                "Could not read shortlist property document: \(document.documentID)"
-            )
             return nil
         }
 

@@ -2,7 +2,7 @@
 //  SignUpView.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-06.
+//  Created by Chuhan Shang on 2026-07-01.
 //
 
 import SwiftUI

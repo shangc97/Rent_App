@@ -2,7 +2,7 @@
 //  AuthStore.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-08.
+//  Created by Chuhan Shang on 2026-07-05.
 //
 
 import Foundation

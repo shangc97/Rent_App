@@ -10,8 +10,11 @@ import SwiftUI
 /// Renders a tenant request summary row, including its linked property,
 /// current request status, and the tenant's submitted or withdrawal message.
 struct TenantRequestRowView: View {
+    @Environment(RentalRequestStore.self) private var rentalRequestStore
+
     let request: RentalRequest
     let property: Property
+    @State private var isPresentingWithdrawalSheet = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -44,8 +47,34 @@ struct TenantRequestRowView: View {
                 Text(request.message)
                     .font(.footnote)
             }
+
+            if request.status == .submitted {
+                withdrawButton
+            }
         }
         .padding(.vertical, 6)
+        .sheet(isPresented: $isPresentingWithdrawalSheet) {
+            TenantRequestWithdrawalSheetView(
+                request: request,
+                property: property
+            ) {
+                isPresentingWithdrawalSheet = false
+            }
+        }
+    }
+
+    /// Presents the withdrawal flow for a still-pending tenant request.
+    private var withdrawButton: some View {
+        Button(role: .destructive) {
+            isPresentingWithdrawalSheet = true
+        } label: {
+            Label("Withdraw Request", systemImage: "arrow.uturn.backward.circle")
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .tint(.red)
+        .disabled(rentalRequestStore.isLoading)
     }
 
     private var statusSymbol: String {

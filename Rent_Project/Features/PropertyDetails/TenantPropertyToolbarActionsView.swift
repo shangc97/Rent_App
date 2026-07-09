@@ -53,34 +53,8 @@ struct TenantPropertyToolbarActionsView: View {
         appState.currentTenantId != nil && property.isListed
     }
 
-    private var isRunningForPreviews: Bool {
-        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-    }
-
     private func handleFavoriteButtonTap() {
         guard let currentTenantId = appState.currentTenantId else { return }
-
-        if isRunningForPreviews {
-            if isShortlisted {
-                shortlistPropertyStore.shortlistProperties.removeAll {
-                    $0.propertyId == property.propertyId
-                        && $0.tenantId == currentTenantId
-                }
-            } else {
-                let shortlistProperty = ShortlistProperty(
-                    shortlistPropertyId: "\(currentTenantId)_\(property.propertyId)",
-                    tenantId: currentTenantId,
-                    propertyId: property.propertyId
-                )
-
-                shortlistPropertyStore.shortlistProperties.insert(
-                    shortlistProperty,
-                    at: 0
-                )
-            }
-
-            return
-        }
 
         Task {
             if isShortlisted {

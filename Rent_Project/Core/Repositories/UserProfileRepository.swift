@@ -2,7 +2,7 @@
 //  UserProfileRepository.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-08.
+//  Created by Chuhan Shang on 2026-07-05.
 //
 
 import FirebaseFirestore
@@ -33,12 +33,7 @@ final class UserProfileRepository {
             .getDocument()
 
         guard document.exists else { return nil }
-        guard let data = document.data() else {
-            print(
-                "Could not read user profile document: \(document.documentID)"
-            )
-            return nil
-        }
+        guard let data = document.data() else { return nil }
 
         return userProfile(from: data, userId: document.documentID)
     }
@@ -62,7 +57,6 @@ final class UserProfileRepository {
             let role = AppUserRole(rawValue: rawRole),
             let phoneNumber = data["phoneNumber"] as? String
         else {
-            print("Could not read user profile document: \(userId)")
             return nil
         }
 

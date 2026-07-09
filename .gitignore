@@ -3,3 +3,4 @@ xcuserdata/
 DerivedData/
 tmp/
 *.xcuserstate
+node_modules/

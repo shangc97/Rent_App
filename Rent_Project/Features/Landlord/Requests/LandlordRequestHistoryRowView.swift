@@ -55,9 +55,6 @@ struct LandlordRequestHistoryRowView: View {
         case .withdrawn:
             return "archivebox"
         case .submitted:
-            assertionFailure(
-                "LandlordRequestHistoryRowView should only render processed or archived requests."
-            )
             return "clock.badge"
         }
     }
@@ -72,9 +69,6 @@ struct LandlordRequestHistoryRowView: View {
         case .withdrawn:
             return .gray
         case .submitted:
-            assertionFailure(
-                "LandlordRequestHistoryRowView should only render processed or archived requests."
-            )
             return .orange
         }
     }

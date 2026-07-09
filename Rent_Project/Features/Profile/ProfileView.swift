@@ -2,92 +2,126 @@
 //  ProfileView.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-06.
+//  Created by Chuhan Shang on 2026-07-01.
 //
 
 import SwiftUI
 
+/// Displays the signed-in user's current profile details and session actions.
 struct ProfileView: View {
     @Environment(AppState.self) private var appState
+    @Environment(AuthStore.self) private var authStore
+    @Environment(PropertyStore.self) private var propertyStore
+    @Environment(RentalRequestStore.self) private var rentalRequestStore
+    @Environment(ShortlistPropertyStore.self) private var shortlistPropertyStore
+    @Environment(UserProfileStore.self) private var userProfileStore
+    @State private var isPresentingAddProperty = false
 
     private var currentRole: AppUserRole? {
         appState.currentUserRole
     }
 
-    private var roleName: String {
-        currentRole?.displayName ?? "Guest"
-    }
-
-    private var propertyShortcutTitle: String {
+    private var navigationTitle: String {
         switch currentRole {
+        case .tenant:
+            "Tenant Profile"
         case .landlord:
-            "Open Managed Property"
-        case .tenant, .none:
-            "Open Sample Property"
+            "Landlord Profile"
+        case .none:
+            "Profile"
         }
     }
 
+    private var currentUserProfile: UserProfile? {
+        userProfileStore.currentUserProfile
+    }
+
+    private var currentLandlordId: String? {
+        appState.currentLandlordId
+    }
+
+    /// Renders the profile summary, edit entry point, and logout action.
     var body: some View {
         List {
-            Section("Current Session") {
+            Section("Profile") {
                 LabeledContent(
-                    "User ID",
-                    value: appState.currentUserId ?? "Not signed in"
+                    "Full Name",
+                    value: currentUserProfile?.fullName ?? "Not loaded"
                 )
                 LabeledContent(
-                    "Role",
-                    value: roleName
+                    "Email",
+                    value: currentUserProfile?.email ?? "Not loaded"
                 )
-            }
-
-            Section("Profile Status") {
-                Text(
-                    "Profile editing will be built in Module 6 after FirebaseAuth and Firestore are connected."
+                LabeledContent(
+                    "Phone",
+                    value: currentUserProfile?.phoneNumber ?? "Not loaded"
                 )
-                .foregroundStyle(.secondary)
-            }
-
-            Section("Navigation") {
-                NavigationLink(propertyShortcutTitle) {
-                    PropertyDetailsView()
-                }
             }
 
             if currentRole != nil {
-                Section("Session") {
-                    Button("Log Out", role: .destructive) {
-                        appState.logout()
+                Button("Log Out", role: .destructive) {
+                    signOut()
+                }
+            }
+
+            if let errorMessage = authStore.errorMessage {
+                Section("Error") {
+                    Text(errorMessage)
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+        .navigationTitle(navigationTitle)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if currentLandlordId != nil {
+                    Button {
+                        isPresentingAddProperty = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+
+                if let currentUserProfile {
+                    NavigationLink {
+                        ProfileEditView(userProfile: currentUserProfile)
+                    } label: {
+                        Image(systemName: "square.and.pencil")
                     }
                 }
             }
         }
-        .navigationTitle("Profile")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
+        .sheet(isPresented: $isPresentingAddProperty) {
+            if let currentLandlordId {
+                NavigationStack {
+                    LandlordAddPropertyView(
+                        landlordId: currentLandlordId
+                    ) { newProperty in
+                        await propertyStore.addProperty(newProperty)
+                    }
+                }
+            }
+        }
+        .task(id: appState.currentUserId) {
+            guard let currentUserId = appState.currentUserId else { return }
 
-#Preview("Tenant Profile") {
-    NavigationStack {
-        ProfileView()
+            if userProfileStore.currentUserProfile?.userId != currentUserId {
+                await userProfileStore.loadUserProfile(
+                    userId: currentUserId
+                )
+            }
+        }
     }
-    .environment(
-        AppState.preview(
-            sessionState: .tenant,
-            currentUserRole: .tenant,
-            currentUserId: "demo-tenant"
-        )
-    )
-}
 
-#Preview("Landlord Profile") {
-    NavigationStack {
-        ProfileView()
-    }
-    .environment(
-        AppState.preview(
-            sessionState: .landlord,
-            currentUserRole: .landlord,
-            currentUserId: "demo-landlord"
+    /// Signs out the current session and clears user-scoped app state.
+    private func signOut() {
+        _ = AppSessionCoordinator.signOutCurrentSession(
+            appState: appState,
+            authStore: authStore,
+            userProfileStore: userProfileStore,
+            shortlistPropertyStore: shortlistPropertyStore,
+            rentalRequestStore: rentalRequestStore
         )
-    )
+    }
 }

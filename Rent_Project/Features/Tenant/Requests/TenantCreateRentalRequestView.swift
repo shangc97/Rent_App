@@ -2,13 +2,13 @@
 //  TenantCreateRentalRequestView.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-09.
+//  Created by Chuhan Shang on 2026-07-07.
 //
 
 import SwiftUI
 
-/// Lets a tenant compose and submit a rental request for the selected
-/// property.
+/// Lets a tenant compose and submit a rental request within the tenant
+/// request flow.
 struct TenantCreateRentalRequestView: View {
     /// Represents the alerts that can be shown during request submission.
     private enum ActiveAlert: Identifiable {

@@ -15,24 +15,14 @@ struct PropertySearchView: View {
 
     /// Lays out the search field and the independently scrollable search results.
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 16) {
-                searchInputSection
-                searchResultsSection
-                    .frame(
-                        minHeight: max(geometry.size.height * 0.45, 320),
-                        maxHeight: .infinity
-                    )
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .frame(
-                width: geometry.size.width,
-                height: geometry.size.height,
-                alignment: .top
-            )
+        FixedTopScrollableResultsLayout(
+            resultsTitle: "Search Results",
+            scrollIdentity: searchResultsIdentity
+        ) {
+            searchInputSection
+        } resultsContent: {
+            resultsContent
         }
-        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationTitle("Search")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -47,22 +37,6 @@ struct PropertySearchView: View {
                 .font(.headline)
 
             searchTextField
-        }
-    }
-
-    /// Displays the framed results area and its scrollable content.
-    private var searchResultsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Search Results")
-                .font(.headline)
-
-            ScrollView {
-                LazyVStack(spacing: 12) { resultsContent }
-                .padding(16)
-            }
-            .scrollIndicators(.visible)
-            .background(resultsBackground)
-            .overlay(resultsBorder)
         }
     }
 
@@ -132,6 +106,12 @@ struct PropertySearchView: View {
         }
     }
 
+    /// Provides a stable identity for scroll content refreshes when the
+    /// search result set changes.
+    private var searchResultsIdentity: String {
+        filteredProperties.map(\.propertyId).joined(separator: "|")
+    }
+
     /// Provides the shared background used by the search input field.
     private var searchFieldBackground: some View {
         RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -141,18 +121,6 @@ struct PropertySearchView: View {
     /// Provides the shared border used by the search input field.
     private var searchFieldBorder: some View {
         RoundedRectangle(cornerRadius: 16, style: .continuous)
-            .stroke(Color.black.opacity(0.06), lineWidth: 1)
-    }
-
-    /// Provides the background card used behind the results scroll view.
-    private var resultsBackground: some View {
-        RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .fill(Color(.secondarySystemGroupedBackground))
-    }
-
-    /// Provides the border used around the results scroll view container.
-    private var resultsBorder: some View {
-        RoundedRectangle(cornerRadius: 20, style: .continuous)
             .stroke(Color.black.opacity(0.06), lineWidth: 1)
     }
 
@@ -176,23 +144,10 @@ struct PropertySearchView: View {
         NavigationLink {
             PropertyDetailsView(property: property)
         } label: {
-            PropertyRowView(property: property)
-                .padding(14)
-                .background(resultCardBackground)
-                .overlay(resultCardBorder)
+            ResultsCardView {
+                PropertyRowView(property: property)
+            }
         }
         .buttonStyle(.plain)
-    }
-
-    /// Provides the card background used for each search result row.
-    private var resultCardBackground: some View {
-        RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .fill(Color(.systemBackground))
-    }
-
-    /// Provides the border used for each search result row.
-    private var resultCardBorder: some View {
-        RoundedRectangle(cornerRadius: 18, style: .continuous)
-            .stroke(Color.black.opacity(0.06), lineWidth: 1)
     }
 }

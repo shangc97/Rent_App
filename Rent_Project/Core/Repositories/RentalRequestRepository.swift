@@ -2,7 +2,7 @@
 //  RentalRequestRepository.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-08.
+//  Created by Chuhan Shang on 2026-07-05.
 //
 
 import FirebaseFirestore
@@ -101,7 +101,6 @@ final class RentalRequestRepository {
             let status = RentalRequestStatus(rawValue: rawStatus),
             let message = data["message"] as? String
         else {
-            print("Could not read rental request document: \(document.documentID)")
             return nil
         }
 

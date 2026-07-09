@@ -2,7 +2,7 @@
 //  PropertyRepository.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-08.
+//  Created by Chuhan Shang on 2026-07-05.
 //
 
 import FirebaseFirestore
@@ -104,7 +104,6 @@ final class PropertyRepository {
             let status = PropertyStatus(rawValue: rawStatus),
             let imageURL = data["imageURL"] as? String
         else {
-            print("Could not read property document: \(document.documentID)")
             return nil
         }
 

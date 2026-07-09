@@ -2,7 +2,7 @@
 //  TenantHomeView.swift
 //  Rent_Project
 //
-//  Created by Chuhan Shang on 2026-07-06.
+//  Created by Chuhan Shang on 2026-07-01.
 //
 
 import SwiftUI
@@ -24,31 +24,41 @@ struct TenantHomeView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            AllPropertyListingsView()
+            NavigationStack {
+                AllPropertyListingsView()
+            }
                 .tabItem {
                     Label("All Listings", systemImage: "square.grid.2x2")
                 }
                 .tag(TenantTab.allListings)
 
-            TenantShortlistView()
+            NavigationStack {
+                TenantShortlistView()
+            }
                 .tabItem {
                     Label("Shortlist", systemImage: "heart")
                 }
                 .tag(TenantTab.shortlist)
 
-            TenantRequestsView()
+            NavigationStack {
+                TenantRequestsView()
+            }
                 .tabItem {
                     Label("Requests", systemImage: "envelope")
                 }
                 .tag(TenantTab.requests)
 
-            PropertySearchView()
+            NavigationStack {
+                PropertySearchView()
+            }
                 .tabItem {
                     Label("Search", systemImage: "magnifyingglass")
                 }
                 .tag(TenantTab.search)
 
-            ProfileView()
+            NavigationStack {
+                ProfileView()
+            }
                 .tabItem {
                     Label("Profile", systemImage: "person.crop.circle")
                 }
