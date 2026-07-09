@@ -7,25 +7,36 @@
 
 import SwiftUI
 
+/// Hosts the tenant-facing tab navigation for browsing listings, managing the
+/// shortlist, reviewing rental requests, searching properties, and viewing the
+/// user profile.
 struct TenantHomeView: View {
+    /// Defines the tabs available in the tenant home experience.
     private enum TenantTab: Hashable {
+        case allListings
         case shortlist
         case requests
         case search
         case profile
     }
 
-    @State private var selectedTab: TenantTab = .shortlist
+    @State private var selectedTab: TenantTab = .allListings
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            TenantShortlistTab()
+            AllPropertyListingsView()
+                .tabItem {
+                    Label("All Listings", systemImage: "square.grid.2x2")
+                }
+                .tag(TenantTab.allListings)
+
+            TenantShortlistView()
                 .tabItem {
                     Label("Shortlist", systemImage: "heart")
                 }
                 .tag(TenantTab.shortlist)
 
-            TenantRequestsTab()
+            TenantRequestsView()
                 .tabItem {
                     Label("Requests", systemImage: "envelope")
                 }
@@ -44,17 +55,4 @@ struct TenantHomeView: View {
                 .tag(TenantTab.profile)
         }
     }
-}
-
-#Preview("Tenant Home") {
-    NavigationStack {
-        TenantHomeView()
-    }
-    .environment(
-        AppState.preview(
-            sessionState: .tenant,
-            currentUserRole: .tenant,
-            currentUserId: "demo-tenant"
-        )
-    )
 }
