@@ -46,38 +46,9 @@ final class PropertyStore {
         await loadAllProperties()
     }
 
-    /// Loads only properties whose status is currently listed.
-    func loadListedProperties() async {
-        isLoading = true
-        errorMessage = nil
-
-        do {
-            properties = try await propertyRepository.fetchListedProperties()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-
-        isLoading = false
-    }
-
-    /// Loads all properties that belong to the given landlord.
-    func loadLandlordProperties(landlordId: String) async {
-        isLoading = true
-        errorMessage = nil
-
-        do {
-            properties = try await propertyRepository.fetchLandlordProperties(
-                landlordId: landlordId
-            )
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-
-        isLoading = false
-    }
-
     /// Persists a new property and inserts it into local state on success.
-    func addProperty(_ property: Property) async {
+    @discardableResult
+    func addProperty(_ property: Property) async -> Bool {
         isLoading = true
         errorMessage = nil
 
@@ -86,20 +57,38 @@ final class PropertyStore {
             properties.insert(property, at: 0)
         } catch {
             errorMessage = error.localizedDescription
+            isLoading = false
+            return false
         }
 
         isLoading = false
+        return true
     }
 
-    /// Persists updates for an existing property and refreshes the matching local item.
-    func updateProperty(propertyId: String, property: Property) async {
+    /// Persists updates for an existing property, and when the listing becomes
+    /// unavailable it also withdraws any submitted requests for that property.
+    @discardableResult
+    func updateProperty(
+        propertyId: String,
+        property: Property,
+        previousStatus: PropertyStatus? = nil,
+        rentalRequestStore: RentalRequestStore? = nil
+    ) async -> Bool {
         isLoading = true
         errorMessage = nil
 
         do {
+            let resolvedPreviousStatus =
+                previousStatus
+                ?? properties.first(where: { $0.propertyId == propertyId })?.status
+                ?? property.status
+            let shouldWithdrawSubmittedRequests =
+                resolvedPreviousStatus == .listed && property.status != .listed
+
             try await propertyRepository.updateProperty(
                 propertyId: propertyId,
-                property: property
+                property: property,
+                shouldWithdrawSubmittedRequests: shouldWithdrawSubmittedRequests
             )
 
             if let index = properties.firstIndex(where: {
@@ -107,11 +96,20 @@ final class PropertyStore {
             }) {
                 properties[index] = property
             }
+
+            if shouldWithdrawSubmittedRequests {
+                rentalRequestStore?.markSubmittedRequestsAsWithdrawn(
+                    for: propertyId
+                )
+            }
         } catch {
             errorMessage = error.localizedDescription
+            isLoading = false
+            return false
         }
 
         isLoading = false
+        return true
     }
 
     /// Deletes a property from Firestore and removes it from local state.

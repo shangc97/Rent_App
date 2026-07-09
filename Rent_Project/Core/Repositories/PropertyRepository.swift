@@ -11,6 +11,7 @@ import Foundation
 /// Persists property listings and runs Firestore queries used by browse and landlord flows.
 final class PropertyRepository {
     private let COLLECTION_PROPERTY = "properties"
+    private let COLLECTION_RENTAL_REQUEST = "rentalRequests"
 
     private var database: Firestore {
         Firestore.firestore()
@@ -27,36 +28,6 @@ final class PropertyRepository {
         }
     }
 
-    /// Fetches only properties that are currently listed.
-    func fetchListedProperties() async throws -> [Property] {
-        let snapshot = try await database
-            .collection(COLLECTION_PROPERTY)
-            .whereField(
-                "status",
-                isEqualTo: PropertyStatus.listed.rawValue
-            )
-            .getDocuments()
-
-        return snapshot.documents.compactMap { document in
-            property(from: document)
-        }
-    }
-
-    /// Fetches all properties owned by the specified landlord.
-    func fetchLandlordProperties(landlordId: String) async throws -> [Property] {
-        let snapshot = try await database
-            .collection(COLLECTION_PROPERTY)
-            .whereField(
-                "landlordId",
-                isEqualTo: landlordId
-            )
-            .getDocuments()
-
-        return snapshot.documents.compactMap { document in
-            property(from: document)
-        }
-    }
-
     /// Writes a new property document using the model's existing id.
     func addProperty(_ property: Property) async throws {
         try await database
@@ -65,12 +36,42 @@ final class PropertyRepository {
             .setData(firestoreData(for: property))
     }
 
-    /// Updates the Firestore document for an existing property.
-    func updateProperty(propertyId: String, property: Property) async throws {
-        try await database
+    /// Updates the Firestore document for an existing property and optionally
+    /// withdraws any still-submitted requests for that property in the same batch.
+    func updateProperty(
+        propertyId: String,
+        property: Property,
+        shouldWithdrawSubmittedRequests: Bool
+    ) async throws {
+        let propertyDocument = database
             .collection(COLLECTION_PROPERTY)
             .document(propertyId)
-            .updateData(firestoreData(for: property))
+
+        guard shouldWithdrawSubmittedRequests else {
+            try await propertyDocument.updateData(firestoreData(for: property))
+            return
+        }
+
+        let submittedRequestSnapshot = try await database
+            .collection(COLLECTION_RENTAL_REQUEST)
+            .whereField("propertyId", isEqualTo: propertyId)
+            .whereField(
+                "status",
+                isEqualTo: RentalRequestStatus.submitted.rawValue
+            )
+            .getDocuments()
+
+        let batch = database.batch()
+        batch.updateData(firestoreData(for: property), forDocument: propertyDocument)
+
+        for document in submittedRequestSnapshot.documents {
+            batch.updateData(
+                ["status": RentalRequestStatus.withdrawn.rawValue],
+                forDocument: document.reference
+            )
+        }
+
+        try await batch.commit()
     }
 
     /// Deletes a property document from Firestore.

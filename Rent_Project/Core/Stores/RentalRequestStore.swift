@@ -243,6 +243,23 @@ final class RentalRequestStore {
         errorMessage = nil
     }
 
+    /// Mirrors a property-status change by locally withdrawing any still-submitted
+    /// requests for that property after the persistence layer succeeds.
+    func markSubmittedRequestsAsWithdrawn(for propertyId: String) {
+        rentalRequests = rentalRequests.map { rentalRequest in
+            guard
+                rentalRequest.propertyId == propertyId,
+                rentalRequest.status == .submitted
+            else {
+                return rentalRequest
+            }
+
+            var updatedRentalRequest = rentalRequest
+            updatedRentalRequest.status = .withdrawn
+            return updatedRentalRequest
+        }
+    }
+
     private func replaceOrInsertRentalRequest(_ rentalRequest: RentalRequest) {
         if let index = rentalRequests.firstIndex(where: {
             $0.requestId == rentalRequest.requestId
