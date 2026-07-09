@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Represents the profile information stored for an authenticated app user.
 struct UserProfile: Identifiable, Codable, Hashable, Sendable {
     let userId: String
     var email: String
@@ -14,8 +15,10 @@ struct UserProfile: Identifiable, Codable, Hashable, Sendable {
     var role: AppUserRole
     var phoneNumber: String
 
+    /// Provides the stable identifier required by SwiftUI list and navigation APIs.
     var id: String { userId }
 
+    /// Creates a profile model from the persisted auth and role fields.
     init(
         userId: String,
         email: String,
@@ -30,6 +33,7 @@ struct UserProfile: Identifiable, Codable, Hashable, Sendable {
         self.phoneNumber = phoneNumber
     }
 
+    /// Returns the preferred display name, falling back to email when needed.
     var displayName: String {
         let trimmedName = fullName.trimmingCharacters(
             in: .whitespacesAndNewlines
