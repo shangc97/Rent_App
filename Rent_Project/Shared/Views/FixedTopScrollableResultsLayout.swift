@@ -2,7 +2,7 @@
 //  FixedTopScrollableResultsLayout.swift
 //  Rent_Project
 //
-//  Created by Codex on 2026-07-09.
+//  Created by Chuhan Shang on 2026-07-09.
 //
 
 import SwiftUI

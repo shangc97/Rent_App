@@ -1,0 +1,254 @@
+[
+  {
+    "propertyId": "Pr1Ax8Qw2Er7Ty5Ui0Op",
+    "landlordId": "Mx4Jq8Ls2Vn6Pw1Rb7Tc",
+    "title": "King Street Condo",
+    "description": "Bright downtown condo close to transit, groceries, and the waterfront.",
+    "address": {
+      "streetAddress": "123 King Street West",
+      "city": "Toronto",
+      "province": "ON",
+      "postalCode": "M5H 1J9"
+    },
+    "monthlyRent": 2450,
+    "layout": {
+      "bedroomCount": 2,
+      "denCount": 1,
+      "bathroomCount": 1
+    },
+    "parkingSpaceCount": 0,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/king-street-condo/640/480"
+  },
+  {
+    "propertyId": "Ks4Lm9No1Pq6Rs2Tu7Vw",
+    "landlordId": "Mx4Jq8Ls2Vn6Pw1Rb7Tc",
+    "title": "Liberty Village Loft",
+    "description": "Open-concept loft with city views, a private balcony, and one underground parking spot.",
+    "address": {
+      "streetAddress": "75 East Liberty Street",
+      "city": "Toronto",
+      "province": "ON",
+      "postalCode": "M6K 3R3"
+    },
+    "monthlyRent": 2890,
+    "layout": {
+      "bedroomCount": 1,
+      "denCount": 1,
+      "bathroomCount": 1
+    },
+    "parkingSpaceCount": 1,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/liberty-village-loft/640/480"
+  },
+  {
+    "propertyId": "Dx3Cf7Gh2Jk8Mn4Bp9Qa",
+    "landlordId": "Mx4Jq8Ls2Vn6Pw1Rb7Tc",
+    "title": "North York Apartment",
+    "description": "Clean apartment near the subway with a practical layout and updated kitchen finishes.",
+    "address": {
+      "streetAddress": "18 Sheppard Avenue East",
+      "city": "Toronto",
+      "province": "ON",
+      "postalCode": "M2N 0G3"
+    },
+    "monthlyRent": 2325,
+    "layout": {
+      "bedroomCount": 2,
+      "denCount": 0,
+      "bathroomCount": 1
+    },
+    "parkingSpaceCount": 1,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/north-york-apartment/640/480"
+  },
+  {
+    "propertyId": "Yt6Re1Ws5Ed9Rf3Tg7Hu",
+    "landlordId": "Mx4Jq8Ls2Vn6Pw1Rb7Tc",
+    "title": "Mississauga Townhouse",
+    "description": "Spacious townhouse with family-sized bedrooms, natural light, and quick highway access.",
+    "address": {
+      "streetAddress": "88 Lakeshore Road East",
+      "city": "Mississauga",
+      "province": "ON",
+      "postalCode": "L5G 1C8"
+    },
+    "monthlyRent": 3150,
+    "layout": {
+      "bedroomCount": 3,
+      "denCount": 0,
+      "bathroomCount": 2
+    },
+    "parkingSpaceCount": 2,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/mississauga-townhouse/640/480"
+  },
+  {
+    "propertyId": "Ji2Ko8Lp4Za7Xc1Vb6Nm",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Scarborough Garden Suite",
+    "description": "Private lower-level suite with a separate entrance, modern flooring, and quiet surroundings.",
+    "address": {
+      "streetAddress": "240 Ellesmere Road",
+      "city": "Toronto",
+      "province": "ON",
+      "postalCode": "M1R 4E6"
+    },
+    "monthlyRent": 1980,
+    "layout": {
+      "bedroomCount": 1,
+      "denCount": 0,
+      "bathroomCount": 1
+    },
+    "parkingSpaceCount": 0,
+    "status": "rented",
+    "imageURL": "https://picsum.photos/seed/scarborough-garden-suite/640/480"
+  },
+  {
+    "propertyId": "Qa5Sz9Xd3Cf7Vb1Gh8Jk",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Etobicoke Family Home",
+    "description": "Large detached home with a finished basement, fenced yard, and two-car driveway.",
+    "address": {
+      "streetAddress": "16 Bloorlea Crescent",
+      "city": "Toronto",
+      "province": "ON",
+      "postalCode": "M9B 1P3"
+    },
+    "monthlyRent": 3620,
+    "layout": {
+      "bedroomCount": 4,
+      "denCount": 1,
+      "bathroomCount": 3
+    },
+    "parkingSpaceCount": 2,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/etobicoke-family-home/640/480"
+  },
+  {
+    "propertyId": "Lo4Pi7Uy2Tr8Es5Wa1Sd",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Oakville Lakeview Condo",
+    "description": "Well-kept condo near the lake with a generous balcony and a quiet residential feel.",
+    "address": {
+      "streetAddress": "209 Lakeshore Road West",
+      "city": "Oakville",
+      "province": "ON",
+      "postalCode": "L6K 1E9"
+    },
+    "monthlyRent": 2710,
+    "layout": {
+      "bedroomCount": 2,
+      "denCount": 0,
+      "bathroomCount": 2
+    },
+    "parkingSpaceCount": 1,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/oakville-lakeview-condo/640/480"
+  },
+  {
+    "propertyId": "Mn6Bh1Vc9Xz4Lp7Kj2Hg",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Markham Corner Unit",
+    "description": "Sunny corner unit with a den, clean finishes, and easy access to shopping and transit.",
+    "address": {
+      "streetAddress": "35 Enterprise Boulevard",
+      "city": "Markham",
+      "province": "ON",
+      "postalCode": "L6G 0A4"
+    },
+    "monthlyRent": 2575,
+    "layout": {
+      "bedroomCount": 2,
+      "denCount": 1,
+      "bathroomCount": 2
+    },
+    "parkingSpaceCount": 1,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/markham-corner-unit/640/480"
+  },
+  {
+    "propertyId": "Rt3Yu8Io1Pa6Sd2Fg9Hj",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Vaughan Transit Studio",
+    "description": "Compact home near the subway extension with a smart layout and low-maintenance living.",
+    "address": {
+      "streetAddress": "5 Buttermill Avenue",
+      "city": "Vaughan",
+      "province": "ON",
+      "postalCode": "L4K 0J5"
+    },
+    "monthlyRent": 1895,
+    "layout": {
+      "bedroomCount": 1,
+      "denCount": 0,
+      "bathroomCount": 1
+    },
+    "parkingSpaceCount": 0,
+    "status": "unlisted",
+    "imageURL": "https://picsum.photos/seed/vaughan-transit-studio/640/480"
+  },
+  {
+    "propertyId": "Cv5Bn9Mm2Qw7Er4Ty8Ui",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Richmond Hill Semi-Detached",
+    "description": "Well-maintained semi with a finished basement, large kitchen, and family-friendly street.",
+    "address": {
+      "streetAddress": "62 Yongehurst Road",
+      "city": "Richmond Hill",
+      "province": "ON",
+      "postalCode": "L4C 3T2"
+    },
+    "monthlyRent": 3380,
+    "layout": {
+      "bedroomCount": 3,
+      "denCount": 1,
+      "bathroomCount": 2
+    },
+    "parkingSpaceCount": 2,
+    "status": "unlisted",
+    "imageURL": "https://picsum.photos/seed/richmond-hill-semi/640/480"
+  },
+  {
+    "propertyId": "Fk8Lm2Np6Qr1St5Uv9Wx",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Aurora Main Floor Suite",
+    "description": "Bright main-floor suite with updated appliances, a quiet street, and easy commuter access.",
+    "address": {
+      "streetAddress": "44 Wellington Street East",
+      "city": "Aurora",
+      "province": "ON",
+      "postalCode": "L4G 1H5"
+    },
+    "monthlyRent": 2240,
+    "layout": {
+      "bedroomCount": 2,
+      "denCount": 0,
+      "bathroomCount": 1
+    },
+    "parkingSpaceCount": 1,
+    "status": "listed",
+    "imageURL": "https://picsum.photos/seed/aurora-main-floor-suite/640/480"
+  },
+  {
+    "propertyId": "Hs4Jk7Lp3Za8Xc2Vb6Nm",
+    "landlordId": "Qp9Zd2Fk7Lm3Ns8Hy5Ra",
+    "title": "Pickering Lakefront Condo",
+    "description": "Modern condo near the waterfront with open views, a practical layout, and secure building access.",
+    "address": {
+      "streetAddress": "1210 Bayly Street",
+      "city": "Pickering",
+      "province": "ON",
+      "postalCode": "L1W 3R8"
+    },
+    "monthlyRent": 2685,
+    "layout": {
+      "bedroomCount": 2,
+      "denCount": 1,
+      "bathroomCount": 2
+    },
+    "parkingSpaceCount": 1,
+    "status": "rented",
+    "imageURL": "https://picsum.photos/seed/pickering-lakefront-condo/640/480"
+  }
+]
