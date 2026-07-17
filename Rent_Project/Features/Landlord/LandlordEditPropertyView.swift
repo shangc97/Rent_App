@@ -20,14 +20,12 @@ struct LandlordEditPropertyView: View {
     @State private var isShowingSaveConfirmation = false
     @State private var isSaving = false
 
-    /// Seeds the edit form with the current values of the property.
     init(property: Property, onSave: @escaping (Property) async -> Bool) {
         self.property = property
         self.onSave = onSave
         _draft = State(initialValue: LandlordPropertyDraft(property: property))
     }
 
-    /// Renders the edit form and the toolbar actions used in the sheet flow.
     var body: some View {
         LandlordPropertyFormView(
             draft: $draft,
@@ -66,7 +64,6 @@ struct LandlordEditPropertyView: View {
         }
     }
 
-    /// Builds the updated property model from the current edit form state.
     private var updatedProperty: Property? {
         draft.buildProperty(
             propertyId: property.propertyId,
@@ -74,7 +71,6 @@ struct LandlordEditPropertyView: View {
         )
     }
 
-    /// Returns the confirmation copy shown before saving the edited property.
     private var saveConfirmationMessage: String {
         guard let updatedProperty else {
             return "Please confirm that you want to save these property detail changes."
@@ -87,7 +83,6 @@ struct LandlordEditPropertyView: View {
         return "Please confirm that you want to save these property detail changes."
     }
 
-    /// Saves the updated property and dismisses only after the async update succeeds.
     @MainActor
     private func confirmSave() async {
         guard let updatedProperty, !isSaving else { return }

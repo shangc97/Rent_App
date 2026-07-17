@@ -13,7 +13,6 @@ struct PropertySearchView: View {
     @Environment(PropertyStore.self) private var propertyStore
     @State private var userInput = ""
 
-    /// Lays out the search field and the independently scrollable search results.
     var body: some View {
         FixedTopScrollableResultsLayout(
             resultsTitle: "Search Results",
@@ -30,7 +29,6 @@ struct PropertySearchView: View {
         }
     }
 
-    /// Displays the search title and text field input area.
     private var searchInputSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Search Property")
@@ -40,7 +38,6 @@ struct PropertySearchView: View {
         }
     }
 
-    /// Renders the shared search input field styling.
     private var searchTextField: some View {
         TextField(
             "Search by city, address, or keyword",
@@ -53,7 +50,6 @@ struct PropertySearchView: View {
         .overlay(searchFieldBorder)
     }
 
-    /// Chooses between the two empty states and the filtered result list.
     @ViewBuilder
     private var resultsContent: some View {
         if !hasSearchKeyword {
@@ -75,22 +71,18 @@ struct PropertySearchView: View {
         }
     }
 
-    /// Returns the currently entered search keyword without outer whitespace.
     private var trimmedKeyword: String {
         userInput.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Indicates whether the user has entered any searchable keyword.
     private var hasSearchKeyword: Bool {
         !trimmedKeyword.isEmpty
     }
 
-    /// Returns only properties that are currently listed and eligible for search.
     private var searchableProperties: [Property] {
         propertyStore.properties.filter { $0.isListed }
     }
 
-    /// Filters listed properties against the current keyword.
     private var filteredProperties: [Property] {
         guard hasSearchKeyword else { return [] }
 
@@ -106,25 +98,20 @@ struct PropertySearchView: View {
         }
     }
 
-    /// Provides a stable identity for scroll content refreshes when the
-    /// search result set changes.
     private var searchResultsIdentity: String {
         filteredProperties.map(\.propertyId).joined(separator: "|")
     }
 
-    /// Provides the shared background used by the search input field.
     private var searchFieldBackground: some View {
         RoundedRectangle(cornerRadius: 16, style: .continuous)
             .fill(Color(.systemBackground))
     }
 
-    /// Provides the shared border used by the search input field.
     private var searchFieldBorder: some View {
         RoundedRectangle(cornerRadius: 16, style: .continuous)
             .stroke(Color.black.opacity(0.06), lineWidth: 1)
     }
 
-    /// Renders a consistent empty state layout inside the results container.
     private func emptyResultsState(
         title: String,
         message: String,
@@ -139,7 +126,6 @@ struct PropertySearchView: View {
         .padding(.top, 40)
     }
 
-    /// Builds the navigation card for a single filtered property result.
     private func propertyResultLink(for property: Property) -> some View {
         NavigationLink {
             PropertyDetailsView(property: property)

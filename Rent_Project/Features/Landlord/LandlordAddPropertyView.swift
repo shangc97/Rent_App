@@ -21,7 +21,6 @@ struct LandlordAddPropertyView: View {
     @State private var isShowingSaveConfirmation = false
     @State private var isSaving = false
 
-    /// Renders the add-property form using sheet-style toolbar actions.
     var body: some View {
         LandlordPropertyFormView(
             draft: $draft,
@@ -60,8 +59,6 @@ struct LandlordAddPropertyView: View {
         }
     }
 
-    /// Builds a validated property model from the current form state when all
-    /// required fields and rent input are valid.
     private var newProperty: Property? {
         draft.buildProperty(
             propertyId: propertyId,
@@ -69,8 +66,6 @@ struct LandlordAddPropertyView: View {
         )
     }
 
-    /// Saves the new property through the parent flow and dismisses only after
-    /// the async persistence step succeeds.
     @MainActor
     private func confirmSave() async {
         guard let property = newProperty, !isSaving else { return }

@@ -73,8 +73,6 @@ struct PropertyDetailsInfoView: View {
         }
     }
 
-    /// Loads and displays the landlord contact information associated with the
-    /// current property listing.
     private var landlordInfoSection: some View {
         Section("Landlord Info") {
             if isLoadingLandlordInfo {
@@ -94,12 +92,10 @@ struct PropertyDetailsInfoView: View {
         }
     }
 
-    /// Returns the fallback message shown when landlord info cannot be loaded.
     private var landlordInfoFallbackMessage: String {
         landlordInfoErrorMessage ?? "Landlord information is unavailable right now."
     }
 
-    /// Fetches the landlord profile used by the details page.
     @MainActor
     private func loadLandlordProfile() async {
         isLoadingLandlordInfo = true

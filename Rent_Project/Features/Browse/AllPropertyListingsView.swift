@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-/// Displays the full set of currently available property listings and routes
-/// each result into its detail screen.
+/// Displays properties by listing status and routes each result to its details.
 struct AllPropertyListingsView: View {
     @Environment(PropertyStore.self) private var propertyStore
 
     @State private var selectedStatus: PropertyStatus = .listed
 
-    /// Lays out the status filter and the independently scrollable listings area.
     var body: some View {
         FixedTopScrollableResultsLayout(
             resultsTitle: "\(selectedStatus.rawValue.capitalized) Properties",
@@ -31,27 +29,22 @@ struct AllPropertyListingsView: View {
         }
     }
 
-    /// Keeps the segmented status picker fixed at the top of the page.
     private var listingFilterSection: some View {
         PropertyStatusFilterPicker(selection: $selectedStatus)
     }
 
-    /// Provides a stable identity for scroll content refreshes when the selected filter changes.
     private var listingSectionIdentity: String {
         filteredProperties.map(\.propertyId).joined(separator: "|")
     }
 
-    /// Returns only the properties that match the currently selected status.
     private var filteredProperties: [Property] {
         properties.filter { $0.status == selectedStatus }
     }
 
-    /// Returns the current property list from the shared store.
     private var properties: [Property] {
         propertyStore.properties
     }
 
-    /// Chooses between the empty state and the filtered property results.
     @ViewBuilder
     private var listingResultsContent: some View {
         if filteredProperties.isEmpty {
@@ -69,7 +62,6 @@ struct AllPropertyListingsView: View {
         }
     }
 
-    /// Builds the navigation row for a single property listing.
     private func propertyLink(for property: Property) -> some View {
         NavigationLink {
             PropertyDetailsView(property: property)
@@ -81,12 +73,10 @@ struct AllPropertyListingsView: View {
         .buttonStyle(.plain)
     }
 
-    /// Returns the empty-state title for the active property-status filter.
     private var emptyStateTitle: String {
         "No \(selectedStatus.rawValue.capitalized) Properties"
     }
 
-    /// Returns the empty-state message for the active property-status filter.
     private var emptyStateMessage: String {
         switch selectedStatus {
         case .listed:

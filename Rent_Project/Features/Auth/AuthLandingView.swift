@@ -23,28 +23,23 @@ struct AuthLandingView: View {
     @State private var hasLoadedRememberedCredentials = false
     @State private var localErrorMessage: String?
 
-    /// Indicates whether any authentication-related async work is still running.
     private var isSubmitting: Bool {
         authStore.isLoading || userProfileStore.isLoading
     }
 
-    /// Returns the email value after trimming leading and trailing whitespace.
     private var trimmedEmail: String {
         email.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Determines whether the sign-in button should currently be enabled.
     private var canSignIn: Bool {
         !trimmedEmail.isEmpty && !password.isEmpty
     }
 
-    /// Surfaces the most relevant error message from local, auth, or profile state.
     private var errorMessage: String? {
         localErrorMessage ?? authStore.errorMessage
             ?? userProfileStore.errorMessage
     }
 
-    /// Lays out the sign-in card and guest entry point on the shared auth screen.
     var body: some View {
         ZStack {
             backgroundView
@@ -71,7 +66,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders the soft gradient and blurred shapes behind the auth content.
     private var backgroundView: some View {
         LinearGradient(
             colors: [
@@ -99,7 +93,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Displays the compact 4Rent brand lockup in the navigation bar.
     private var navigationBrandTitle: some View {
         HStack(spacing: 10) {
             ZStack {
@@ -127,7 +120,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Wraps the main sign-in controls inside the styled glassmorphism card.
     private var signInCard: some View {
         VStack(alignment: .leading, spacing: 20) {
             signInHeader
@@ -153,7 +145,6 @@ struct AuthLandingView: View {
         .shadow(color: Color.black.opacity(0.06), radius: 24, y: 10)
     }
 
-    /// Displays the section heading above the sign-in form controls.
     private var signInHeader: some View {
         Label(
             "Account Access",
@@ -163,7 +154,6 @@ struct AuthLandingView: View {
         .foregroundStyle(Color.blue)
     }
 
-    /// Groups the email and password fields with their shared layout spacing.
     private var credentialsSection: some View {
         VStack(spacing: 14) {
             labeledCredentialField(
@@ -181,7 +171,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders the primary sign-in action button.
     private var signInButton: some View {
         Button {
             Task {
@@ -213,7 +202,6 @@ struct AuthLandingView: View {
         .opacity((!canSignIn || isSubmitting) ? 0.6 : 1)
     }
 
-    /// Renders the secondary action that opens the sign-up screen.
     private var signUpButton: some View {
         NavigationLink {
             SignUpView()
@@ -238,7 +226,6 @@ struct AuthLandingView: View {
         .opacity(isSubmitting ? 0.6 : 1)
     }
 
-    /// Displays and stores the user's preference for remembered credentials.
     private var rememberMeSection: some View {
         Toggle(isOn: $rememberMe) {
             Text("Remember Me")
@@ -252,7 +239,6 @@ struct AuthLandingView: View {
         )
     }
 
-    /// Presents the alternative guest entry path below the main auth card.
     private var guestSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
@@ -293,7 +279,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders the guest action button while preserving the current visual styling.
     private var guestButton: some View {
         Button {
             AppSessionCoordinator.activateGuestSession(
@@ -329,7 +314,6 @@ struct AuthLandingView: View {
         .opacity(isSubmitting ? 0.6 : 1)
     }
 
-    /// Builds the centered label content shared by the full-width action buttons.
     private func fullWidthButtonLabel(
         title: String,
         systemImage: String? = nil,
@@ -354,7 +338,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders a labeled text field using the shared auth field styling.
     private func labeledCredentialField(
         title: String,
         placeholder: String,
@@ -374,7 +357,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders a labeled secure field using the shared auth field styling.
     private func labeledSecureCredentialField(
         title: String,
         placeholder: String,
@@ -392,7 +374,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Applies the shared visual treatment used by auth text input rows.
     private func inputFieldRow<Content: View>(
         systemImage: String,
         @ViewBuilder content: () -> Content
@@ -416,7 +397,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders the shared styled email input field.
     private func credentialField(
         placeholder: String,
         systemImage: String,
@@ -430,7 +410,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Renders the shared styled password input field.
     private func secureCredentialField(
         placeholder: String,
         systemImage: String
@@ -458,7 +437,6 @@ struct AuthLandingView: View {
         }
     }
 
-    /// Displays inline auth errors inside a lightweight red status banner.
     private func errorBanner(message: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "exclamationmark.circle.fill")
@@ -476,7 +454,6 @@ struct AuthLandingView: View {
         )
     }
 
-    /// Signs the user in, resolves the matching profile, and updates remember-me state.
     private func signIn() async {
         localErrorMessage = nil
 
@@ -510,7 +487,6 @@ struct AuthLandingView: View {
         )
     }
 
-    /// Loads remembered credentials once when the auth landing screen first appears.
     private func loadRememberedCredentialsIfNeeded() {
         guard !hasLoadedRememberedCredentials else { return }
 

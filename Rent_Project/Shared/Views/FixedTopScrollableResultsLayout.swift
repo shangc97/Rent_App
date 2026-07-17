@@ -20,7 +20,6 @@ struct FixedTopScrollableResultsLayout<
     @ViewBuilder let topContent: () -> TopContent
     @ViewBuilder let resultsContent: () -> ResultsContent
 
-    /// Renders the fixed top content and the shared framed results region.
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 16) {
@@ -42,7 +41,6 @@ struct FixedTopScrollableResultsLayout<
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
     }
 
-    /// Displays the titled results container and its independently scrollable content.
     private var resultsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(resultsTitle)
@@ -61,13 +59,11 @@ struct FixedTopScrollableResultsLayout<
         }
     }
 
-    /// Provides the background card used behind the results scroll view.
     private var resultsBackground: some View {
         RoundedRectangle(cornerRadius: 20, style: .continuous)
             .fill(Color(.secondarySystemGroupedBackground))
     }
 
-    /// Provides the border used around the results scroll view container.
     private var resultsBorder: some View {
         RoundedRectangle(cornerRadius: 20, style: .continuous)
             .stroke(Color.black.opacity(0.06), lineWidth: 1)

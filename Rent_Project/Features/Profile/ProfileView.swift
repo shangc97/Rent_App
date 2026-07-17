@@ -40,7 +40,6 @@ struct ProfileView: View {
         appState.currentLandlordId
     }
 
-    /// Renders the profile summary, edit entry point, and logout action.
     var body: some View {
         List {
             Section("Profile") {
@@ -114,7 +113,6 @@ struct ProfileView: View {
         }
     }
 
-    /// Signs out the current session and clears user-scoped app state.
     private func signOut() {
         _ = AppSessionCoordinator.signOutCurrentSession(
             appState: appState,

@@ -15,7 +15,6 @@ enum RentalRequestSection: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    /// Returns the user-facing label used by the segmented picker.
     var title: String {
         switch self {
         case .pending:
@@ -27,12 +26,10 @@ enum RentalRequestSection: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Returns the section heading shown above the filtered request results.
     var sectionHeading: String {
         "\(title) Requests"
     }
 
-    /// Indicates whether a specific request status belongs in this grouped section.
     func includes(_ status: RentalRequestStatus) -> Bool {
         switch self {
         case .pending:

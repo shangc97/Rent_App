@@ -16,7 +16,6 @@ struct RentalRequest: Identifiable, Codable, Hashable, Sendable {
     var status: RentalRequestStatus
     var message: String
 
-    /// Provides the stable identifier required by SwiftUI list and navigation APIs.
     var id: String { requestId }
 }
 
@@ -27,7 +26,6 @@ enum RentalRequestStatus: String, CaseIterable, Codable, Hashable, Sendable {
     case approved
     case rejected
 
-    /// Returns the user-facing label shown for the current request status.
     var displayName: String {
         switch self {
         case .submitted:

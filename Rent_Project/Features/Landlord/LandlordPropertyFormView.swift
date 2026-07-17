@@ -23,7 +23,6 @@ struct LandlordPropertyDraft {
     var status: PropertyStatus = .listed
     var imageURL = ""
 
-    /// Seeds the draft from an existing property when editing a listing.
     init(property: Property? = nil) {
         guard let property else { return }
 
@@ -42,7 +41,6 @@ struct LandlordPropertyDraft {
         imageURL = property.imageURL
     }
 
-    /// Builds a validated property model from the current form fields.
     func buildProperty(propertyId: String, landlordId: String) -> Property? {
         guard
             let monthlyRent = Int(

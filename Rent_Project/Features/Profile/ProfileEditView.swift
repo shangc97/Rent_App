@@ -18,34 +18,28 @@ struct ProfileEditView: View {
     @State private var phoneNumber: String
     @State private var localErrorMessage: String?
 
-    /// Seeds the edit form with the user's current profile values.
     init(userProfile: UserProfile) {
         self.userProfile = userProfile
         _fullName = State(initialValue: userProfile.fullName)
         _phoneNumber = State(initialValue: userProfile.phoneNumber)
     }
 
-    /// Indicates whether a profile save is currently in progress.
     private var isSubmitting: Bool {
         userProfileStore.isLoading
     }
 
-    /// Returns the full name after trimming leading and trailing whitespace.
     private var trimmedFullName: String {
         fullName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Returns the phone number after trimming leading and trailing whitespace.
     private var trimmedPhoneNumber: String {
         phoneNumber.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Determines whether the save action should currently be enabled.
     private var canSave: Bool {
         !trimmedFullName.isEmpty && hasChanges && !isSubmitting
     }
 
-    /// Indicates whether any editable field differs from the persisted profile.
     private var hasChanges: Bool {
         trimmedFullName != userProfile.fullName.trimmingCharacters(
             in: .whitespacesAndNewlines
@@ -54,12 +48,10 @@ struct ProfileEditView: View {
         )
     }
 
-    /// Surfaces the most relevant local or store-level error to the form.
     private var errorMessage: String? {
         localErrorMessage ?? userProfileStore.errorMessage
     }
 
-    /// Renders the editable profile form and save action.
     var body: some View {
         Form {
             editableInfoSection
@@ -89,7 +81,6 @@ struct ProfileEditView: View {
         }
     }
 
-    /// Groups the editable personal fields the user is allowed to update.
     private var editableInfoSection: some View {
         Section("Personal Info") {
             TextField("Full Name", text: $fullName)
@@ -99,7 +90,6 @@ struct ProfileEditView: View {
         }
     }
 
-    /// Displays read-only account fields that are not edited from this screen.
     private var accountInfoSection: some View {
         Section("Account Info") {
             LabeledContent("Email", value: userProfile.email)
@@ -107,7 +97,6 @@ struct ProfileEditView: View {
         }
     }
 
-    /// Displays a profile-update error without changing the surrounding form layout.
     private func errorSection(message: String) -> some View {
         Section("Error") {
             Text(message)
@@ -115,7 +104,6 @@ struct ProfileEditView: View {
         }
     }
 
-    /// Persists the edited profile fields and dismisses on success.
     private func saveProfile() async {
         localErrorMessage = nil
 

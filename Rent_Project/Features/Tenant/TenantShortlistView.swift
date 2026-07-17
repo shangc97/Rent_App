@@ -91,12 +91,10 @@ struct TenantShortlistView: View {
         .buttonStyle(.plain)
     }
 
-    /// Returns the empty-state title for the current shortlist status filter.
     private var emptyStateTitle: String {
         "No \(selectedStatus.rawValue.capitalized) Shortlist Properties"
     }
 
-    /// Returns the empty-state message for the current shortlist status filter.
     private var emptyStateMessage: String {
         switch selectedStatus {
         case .listed:

@@ -9,10 +9,8 @@ import SwiftUI
 
 /// Renders a compact property summary card used by browse and search result lists.
 struct PropertyRowView: View {
-    /// The property model whose summary information is displayed in the row.
     let property: Property
 
-    /// Lays out the property metadata beside the preview image.
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
@@ -40,7 +38,6 @@ struct PropertyRowView: View {
         }
     }
 
-    /// Groups the bedroom, bathroom, and parking metadata into a shared feature pill row.
     private var featureSection: some View {
         HStack(spacing: 12) {
             HStack(spacing: 4) {
@@ -80,7 +77,6 @@ struct PropertyRowView: View {
         )
     }
 
-    /// Loads and displays the property's preview image with a styled fallback state.
     private var propertyImage: some View {
         AsyncImage(url: imageURL) { phase in
             switch phase {
@@ -108,7 +104,6 @@ struct PropertyRowView: View {
         }
     }
 
-    /// Displays the static placeholder shown when the property image cannot be loaded.
     private var imagePlaceholder: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 4, style: .continuous)
@@ -120,7 +115,6 @@ struct PropertyRowView: View {
         }
     }
 
-    /// Converts the stored image URL string into a usable `URL` value.
     private var imageURL: URL? {
         guard !property.imageURL.isEmpty else { return nil }
         return URL(string: property.imageURL)

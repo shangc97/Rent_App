@@ -11,7 +11,6 @@ import SwiftUI
 /// shortlist, reviewing rental requests, searching properties, and viewing the
 /// user profile.
 struct TenantHomeView: View {
-    /// Defines the tabs available in the tenant home experience.
     private enum TenantTab: Hashable {
         case allListings
         case shortlist

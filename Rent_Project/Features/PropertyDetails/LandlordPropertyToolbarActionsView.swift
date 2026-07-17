@@ -62,7 +62,6 @@ struct LandlordPropertyToolbarActionsView: View {
         }
     }
 
-    /// Opens the landlord property form in edit mode for the current listing.
     private var editButton: some View {
         Button {
             isPresentingEditProperty = true
@@ -72,7 +71,6 @@ struct LandlordPropertyToolbarActionsView: View {
         .disabled(propertyStore.isLoading || isSubmittingListingAction)
     }
 
-    /// Presents the list or unlist action for the current property status.
     private func listingStatusButton(for action: ListingAction) -> some View {
         Button {
             pendingListingAction = action
@@ -82,7 +80,6 @@ struct LandlordPropertyToolbarActionsView: View {
         .disabled(propertyStore.isLoading || isSubmittingListingAction)
     }
 
-    /// Returns the status toggle action that is valid for the current property.
     private var listingAction: ListingAction? {
         switch property.status {
         case .listed:
@@ -94,7 +91,6 @@ struct LandlordPropertyToolbarActionsView: View {
         }
     }
 
-    /// Determines whether landlord-only actions should be shown for this detail page.
     private var shouldShowEditButton: Bool {
         guard let currentLandlordId = appState.currentLandlordId else {
             return false
@@ -103,7 +99,6 @@ struct LandlordPropertyToolbarActionsView: View {
         return currentLandlordId == property.landlordId
     }
 
-    /// Bridges the optional listing action into a Boolean alert binding.
     private var isListingActionAlertPresented: Binding<Bool> {
         Binding(
             get: { pendingListingAction != nil },
@@ -115,7 +110,6 @@ struct LandlordPropertyToolbarActionsView: View {
         )
     }
 
-    /// Persists the landlord's chosen listed or unlisted status for the property.
     @MainActor
     private func updatePropertyStatus(using action: ListingAction) async {
         guard shouldShowEditButton else {
@@ -136,7 +130,6 @@ struct LandlordPropertyToolbarActionsView: View {
         )
     }
 
-    /// Defines the landlord status transitions supported by the toolbar.
     private enum ListingAction {
         case list
         case unlist

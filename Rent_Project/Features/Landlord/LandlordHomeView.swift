@@ -12,7 +12,6 @@ import SwiftUI
 struct LandlordHomeView: View {
     @Environment(AppState.self) private var appState
 
-    /// Defines the tabs available in the landlord home experience.
     private enum LandlordTab: Hashable {
         case allListings
         case myListings
@@ -23,7 +22,6 @@ struct LandlordHomeView: View {
 
     @State private var selectedTab: LandlordTab = .allListings
 
-    /// Switches between the landlord tabs for browsing, management, and requests.
     var body: some View {
         Group {
             if let landlordId = appState.currentLandlordId {

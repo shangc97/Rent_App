@@ -63,7 +63,6 @@ struct TenantRequestRowView: View {
         }
     }
 
-    /// Presents the withdrawal flow for a still-pending tenant request.
     private var withdrawButton: some View {
         Button(role: .destructive) {
             isPresentingWithdrawalSheet = true

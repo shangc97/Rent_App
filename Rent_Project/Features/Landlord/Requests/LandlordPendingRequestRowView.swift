@@ -20,7 +20,6 @@ struct LandlordPendingRequestRowView: View {
     @State private var pendingDecision: ReviewDecision?
     @State private var isSubmittingDecision = false
 
-    /// Lays out the pending request details and review controls for the landlord.
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
@@ -164,7 +163,6 @@ struct LandlordPendingRequestRowView: View {
         }
     }
 
-    /// Defines the review actions a landlord can take on a pending request.
     private enum ReviewDecision {
         case deny
         case approve
@@ -197,7 +195,6 @@ struct LandlordPendingRequestRowView: View {
         }
     }
 
-    /// Bridges the optional pending decision into a Boolean alert binding.
     private var isDecisionAlertPresented: Binding<Bool> {
         Binding(
             get: { pendingDecision != nil },
@@ -209,7 +206,6 @@ struct LandlordPendingRequestRowView: View {
         )
     }
 
-    /// Submits the landlord's review decision to the rental request store.
     @MainActor
     private func submitDecision(_ decision: ReviewDecision) async {
         guard let currentLandlordId = appState.currentLandlordId else {

@@ -10,7 +10,6 @@ import SwiftUI
 /// Lets a tenant compose and submit a rental request within the tenant
 /// request flow.
 struct TenantCreateRentalRequestView: View {
-    /// Represents the alerts that can be shown during request submission.
     private enum ActiveAlert: Identifiable {
         case confirmSubmit
         case duplicatePendingRequest

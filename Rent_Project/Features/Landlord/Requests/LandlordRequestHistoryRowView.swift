@@ -15,7 +15,6 @@ struct LandlordRequestHistoryRowView: View {
     let tenant: UserProfile?
     let isTenantProfileUnavailable: Bool
 
-    /// Displays the archived request summary for a previously handled request.
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
@@ -68,7 +67,6 @@ struct LandlordRequestHistoryRowView: View {
         }
     }
 
-    /// Returns the symbol that matches the request's resolved review status.
     private var statusSymbol: String {
         switch request.status {
         case .approved:
@@ -82,7 +80,6 @@ struct LandlordRequestHistoryRowView: View {
         }
     }
 
-    /// Returns the accent color associated with the request's resolved review status.
     private var statusColor: Color {
         switch request.status {
         case .approved:

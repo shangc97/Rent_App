@@ -40,12 +40,10 @@ struct TenantRequestsView: View {
         }
     }
 
-    /// Keeps the segmented request picker fixed at the top of the page.
     private var requestFilterSection: some View {
         RentalRequestSectionPicker(selection: $selectedSection)
     }
 
-    /// Chooses between the empty state and the scrollable request rows.
     @ViewBuilder
     private var requestResultsContent: some View {
         if requestListItems.isEmpty {
@@ -63,7 +61,6 @@ struct TenantRequestsView: View {
         }
     }
 
-    /// Builds a styled request card for a single tenant request.
     private func requestRow(for item: RequestListItem) -> some View {
         ResultsCardView {
             TenantRequestRowView(
@@ -107,12 +104,10 @@ struct TenantRequestsView: View {
         propertyStore.properties.first { $0.propertyId == request.propertyId }
     }
 
-    /// Returns the empty-state title for the currently selected request section.
     private var emptyStateTitle: String {
         "No \(selectedSection.title) Requests"
     }
 
-    /// Returns the empty-state message for the currently selected request section.
     private var emptyStateMessage: String {
         switch selectedSection {
         case .pending:
@@ -124,8 +119,6 @@ struct TenantRequestsView: View {
         }
     }
 
-    /// Couples a rental request with its resolved property so the UI can render
-    /// both pieces of data together.
     private struct RequestListItem: Identifiable {
         let request: RentalRequest
         let property: Property
