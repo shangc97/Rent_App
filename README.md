@@ -2,6 +2,8 @@
 
 4Rent is a SwiftUI rental marketplace where guests discover properties, tenants shortlist homes and submit rental requests, and landlords manage listings and review tenant requests through Firebase-backed role-specific workflows.
 
+*Individual Advanced iOS course project designed and implemented by Chuhan Shang.*
+
 ## Demo
 
 | Authentication and Role Entry | Guest Property Discovery |
@@ -21,7 +23,7 @@
 
 ## Project Context and Personal Scope
 
-Chuhan Shang designed and implemented 4Rent as an individual Advanced iOS course project. The project brief required a single Firestore-backed rental system with guest, tenant, and landlord experiences, Firebase Authentication, editable profiles, and remembered sign-in credentials.
+The project brief required a single Firestore-backed rental system with guest, tenant, and landlord experiences, Firebase Authentication, editable profiles, and remembered sign-in credentials.
 
 Within those requirements, the implementation uses one role-aware iOS app, an Observation-based Model-Repository-Store-View structure, Keychain-protected password storage, coordinated request and listing state changes, and reusable SwiftUI result-state components.
 
@@ -115,7 +117,7 @@ Never commit service-account credentials or other private backend secrets.
 3. Select the `Rent_Project` scheme and an iOS simulator or connected device.
 4. Build and run the app.
 
-## Planned Improvement
+## Planned Improvements
 
 - **Live rental data:** Replace the fictional property records used for the course prototype with an authorized real-estate listing API, allowing users to browse current and verifiable rental inventory.
 - **Map-based property discovery:** Add a map view that displays rental properties by location, allowing users to explore listings geographically and open property details directly from the map.
