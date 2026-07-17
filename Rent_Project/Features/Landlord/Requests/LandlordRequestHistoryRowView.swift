@@ -12,14 +12,14 @@ import SwiftUI
 struct LandlordRequestHistoryRowView: View {
     let property: Property
     let request: RentalRequest
-    let tenant: UserProfile
+    let tenant: UserProfile?
+    let isTenantProfileUnavailable: Bool
 
     /// Displays the archived request summary for a previously handled request.
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
-                Text(tenant.displayName)
-                    .font(.headline)
+                tenantProfileLabel
 
                 Spacer()
 
@@ -43,6 +43,29 @@ struct LandlordRequestHistoryRowView: View {
             }
         }
         .padding(.vertical, 6)
+    }
+
+    @ViewBuilder
+    private var tenantProfileLabel: some View {
+        if let tenant {
+            Text(tenant.displayName)
+                .font(.headline)
+        } else if isTenantProfileUnavailable {
+            Label(
+                "Tenant profile unavailable",
+                systemImage: "person.crop.circle.badge.exclamationmark"
+            )
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+        } else {
+            HStack(spacing: 8) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Loading tenant profile...")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 
     /// Returns the symbol that matches the request's resolved review status.

@@ -15,7 +15,8 @@ struct LandlordPendingRequestRowView: View {
 
     let property: Property
     let request: RentalRequest
-    let tenant: UserProfile
+    let tenant: UserProfile?
+    let isTenantProfileUnavailable: Bool
     @State private var pendingDecision: ReviewDecision?
     @State private var isSubmittingDecision = false
 
@@ -24,8 +25,7 @@ struct LandlordPendingRequestRowView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(tenant.displayName)
-                        .font(.headline)
+                    tenantProfileLabel
                     Text("is waiting for your review")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -138,6 +138,29 @@ struct LandlordPendingRequestRowView: View {
             }
         } message: { decision in
             Text(decision.message)
+        }
+    }
+
+    @ViewBuilder
+    private var tenantProfileLabel: some View {
+        if let tenant {
+            Text(tenant.displayName)
+                .font(.headline)
+        } else if isTenantProfileUnavailable {
+            Label(
+                "Tenant profile unavailable",
+                systemImage: "person.crop.circle.badge.exclamationmark"
+            )
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+        } else {
+            HStack(spacing: 8) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Loading tenant profile...")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

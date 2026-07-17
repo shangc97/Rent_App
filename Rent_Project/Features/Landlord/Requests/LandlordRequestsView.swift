@@ -15,6 +15,7 @@ struct LandlordRequestsView: View {
     @Environment(RentalRequestStore.self) private var rentalRequestStore
     @State private var selectedSection: RentalRequestSection = .pending
     @State private var tenantProfilesById: [String: UserProfile] = [:]
+    @State private var unavailableTenantProfileIds: Set<String> = []
     @State private var loadedLandlordId: String?
 
     private let userProfileRepository = UserProfileRepository()
@@ -36,6 +37,7 @@ struct LandlordRequestsView: View {
 
             guard let currentLandlordId = appState.currentLandlordId else {
                 tenantProfilesById = [:]
+                unavailableTenantProfileIds = []
                 loadedLandlordId = nil
                 rentalRequestStore.clearRentalRequests()
                 return
@@ -43,6 +45,7 @@ struct LandlordRequestsView: View {
 
             if loadedLandlordId != currentLandlordId {
                 tenantProfilesById = [:]
+                unavailableTenantProfileIds = []
                 loadedLandlordId = currentLandlordId
             }
 
@@ -111,13 +114,17 @@ struct LandlordRequestsView: View {
                     LandlordPendingRequestRowView(
                         property: item.property,
                         request: item.request,
-                        tenant: tenant(for: item.request)
+                        tenant: tenant(for: item.request),
+                        isTenantProfileUnavailable:
+                            isTenantProfileUnavailable(for: item.request)
                     )
                 } else {
                     LandlordRequestHistoryRowView(
                         property: item.property,
                         request: item.request,
-                        tenant: tenant(for: item.request)
+                        tenant: tenant(for: item.request),
+                        isTenantProfileUnavailable:
+                            isTenantProfileUnavailable(for: item.request)
                     )
                 }
             }
@@ -165,16 +172,14 @@ struct LandlordRequestsView: View {
         }
     }
 
-    /// Returns the cached tenant profile for the request or a placeholder
-    /// while the real profile is still loading.
-    private func tenant(for request: RentalRequest) -> UserProfile {
-        tenantProfilesById[request.tenantId] ?? UserProfile(
-            userId: request.tenantId,
-            email: "",
-            fullName: "Tenant",
-            role: .tenant,
-            phoneNumber: ""
-        )
+    private func tenant(for request: RentalRequest) -> UserProfile? {
+        tenantProfilesById[request.tenantId]
+    }
+
+    private func isTenantProfileUnavailable(
+        for request: RentalRequest
+    ) -> Bool {
+        unavailableTenantProfileIds.contains(request.tenantId)
     }
 
     /// Loads any missing tenant profiles needed to render the landlord request rows.
@@ -183,7 +188,10 @@ struct LandlordRequestsView: View {
         let missingTenantIds = Array(
             Set(landlordRequests.map(\.tenantId))
         )
-        .filter { tenantProfilesById[$0] == nil }
+        .filter {
+            tenantProfilesById[$0] == nil
+                && !unavailableTenantProfileIds.contains($0)
+        }
         .sorted()
 
         guard !missingTenantIds.isEmpty else { return }
@@ -196,9 +204,11 @@ struct LandlordRequestsView: View {
                     )
                 {
                     tenantProfilesById[tenantId] = tenantProfile
+                } else {
+                    unavailableTenantProfileIds.insert(tenantId)
                 }
             } catch {
-                continue
+                unavailableTenantProfileIds.insert(tenantId)
             }
         }
     }
