@@ -179,11 +179,15 @@ Include a portfolio or LinkedIn profile only when a valid URL has been provided.
 
 Use the following sections only when they are relevant and supported by evidence.
 
-### Project Status and Known Limitations
+### Planned Improvements
 
-Use this section when readers need additional context about project completeness, production readiness, unavailable infrastructure, or meaningful limitations.
+Include only when the project owner has provided concrete next steps or when planned work is explicitly documented in the repository.
 
-Keep it brief and factual. Do not manufacture limitations merely to fill the section, and do not place a long list of negatives near the top of the README.
+Prefer one to three high-value improvements that extend the user experience, address a prototype constraint, or demonstrate a meaningful next engineering step.
+
+For each improvement, briefly explain what would change and why it would make the project more useful or technically complete. Clearly distinguish planned work from implemented functionality.
+
+Do not repeat completed features or add speculative ideas merely to make the project appear active.
 
 ---
 
@@ -218,14 +222,6 @@ Document the most important endpoints, inputs, outputs, authentication requireme
 Include when the data model is important to understanding the project's complexity or engineering decisions.
 
 Show only the principal entities and relationships. Prefer a concise diagram or table over exhaustive schema documentation.
-
----
-
-### Roadmap
-
-List only planned work documented in the repository or explicitly provided by the project owner.
-
-Clearly distinguish planned work from implemented functionality. Do not repeat completed features or add speculative ideas to make the project appear active.
 
 ---
 

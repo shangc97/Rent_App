@@ -2,20 +2,22 @@
 
 4Rent is a SwiftUI rental marketplace where guests discover properties, tenants shortlist homes and submit rental requests, and landlords manage listings and review tenant requests through Firebase-backed role-specific workflows.
 
-<!-- Demo setup: add all five images under Docs/Images/, then remove the comment markers surrounding the section below. -->
-<!--
 ## Demo
 
-| Guest Property Discovery | Tenant Shortlist | Tenant Request Lifecycle |
-| :---: | :---: | :---: |
-| ![Guest browsing and searching rental properties](Docs/Images/guest-property-discovery.png) | ![Tenant viewing shortlisted rental properties](Docs/Images/tenant-shortlist.png) | ![Tenant tracking rental request status](Docs/Images/tenant-request-lifecycle.png) |
-| Browse and search available properties, then open a listing without creating an account. | Save properties to a Firestore-backed shortlist and filter them by availability. | Submit or withdraw rental requests and track pending, processed, and archived outcomes. |
-
-| Landlord Listing Management | Landlord Request Review |
+| Authentication and Role Entry | Guest Property Discovery |
 | :---: | :---: |
-| ![Landlord managing owned property listings](Docs/Images/landlord-listing-management.png) | ![Landlord reviewing a tenant rental request](Docs/Images/landlord-request-review.png) |
-| Create, edit, list, and unlist owned properties from the landlord workflow. | Review tenant details and request messages before approving or denying an application. |
--->
+| ![4Rent sign-in screen with Remember Me and guest access](Images/homepage.png) | ![Guest browsing available rental property listings](Images/guest-property-discovery.png) |
+| Sign in with remembered credentials, create an account, or enter the property marketplace as a guest. | Browse the property catalog by status and inspect key rental details without creating an account. |
+
+| Tenant Shortlist | Tenant Request Tracking |
+| :---: | :---: |
+| ![Tenant viewing shortlisted rental properties](Images/tenant-shortlist.png) | ![Tenant tracking a submitted rental request](Images/tenant-request.png) |
+| Save properties to a Firestore-backed shortlist and filter them by current listing status. | Track requests by lifecycle status and withdraw an application while it is still pending. |
+
+| Landlord Property Editing | Landlord Request Review |
+| :---: | :---: |
+| ![Landlord editing property details and rental information](Images/landlord-property-editing.png) | ![Landlord reviewing pending tenant rental requests](Images/landlord-request-review.png) |
+| Edit listing details and property status in a single validated form. | Review tenant details and request messages before approving or denying each request. |
 
 ## Project Context and Personal Scope
 
