@@ -1,6 +1,21 @@
 # 4Rent
 
-4Rent is a SwiftUI rental marketplace that connects guest browsing, tenant applications, and landlord listing management through Firebase-backed, role-specific workflows.
+4Rent is a SwiftUI rental marketplace where guests discover properties, tenants shortlist homes and submit rental requests, and landlords manage listings and review tenant requests through Firebase-backed role-specific workflows.
+
+<!-- Demo setup: add all five images under Docs/Images/, then remove the comment markers surrounding the section below. -->
+<!--
+## Demo
+
+| Guest Property Discovery | Tenant Shortlist | Tenant Request Lifecycle |
+| :---: | :---: | :---: |
+| ![Guest browsing and searching rental properties](Docs/Images/guest-property-discovery.png) | ![Tenant viewing shortlisted rental properties](Docs/Images/tenant-shortlist.png) | ![Tenant tracking rental request status](Docs/Images/tenant-request-lifecycle.png) |
+| Browse and search available properties, then open a listing without creating an account. | Save properties to a Firestore-backed shortlist and filter them by availability. | Submit or withdraw rental requests and track pending, processed, and archived outcomes. |
+
+| Landlord Listing Management | Landlord Request Review |
+| :---: | :---: |
+| ![Landlord managing owned property listings](Docs/Images/landlord-listing-management.png) | ![Landlord reviewing a tenant rental request](Docs/Images/landlord-request-review.png) |
+| Create, edit, list, and unlist owned properties from the landlord workflow. | Review tenant details and request messages before approving or denying an application. |
+-->
 
 ## Project Context and Personal Scope
 
@@ -10,12 +25,21 @@ Within those requirements, the implementation uses one role-aware iOS app, an Ob
 
 ## Key Workflows
 
-- **Role-based entry:** Guests can browse without an account, while tenants and landlords can register, sign in, and enter navigation flows selected from their Firestore profile role.
-- **Property discovery:** Users can browse listings by status, search currently listed properties by title, city, or address, and inspect property and landlord details.
-- **Tenant shortlist and sharing:** Tenants can persist a shortlist in Firestore, filter saved properties by status, and share a formatted property summary with the system share sheet.
-- **Rental request lifecycle:** Tenants can submit and withdraw requests, cannot create duplicate pending requests for the same property, and can review pending, processed, and archived history.
-- **Landlord listing management:** Landlords can add and edit owned properties, move listings between listed and unlisted states, and review incoming requests.
-- **Request review and profiles:** Landlords can approve or deny requests for their own properties, while authenticated users can view and update their profile or sign out from any role flow.
+All roles can browse the property catalog, search available listings, and view property details.
+
+### Guest
+
+- Explore the rental marketplace without creating an account.
+
+### Tenant
+
+- Save properties to a Firestore-backed shortlist, filter saved homes by status, and share property details.
+- Submit and withdraw rental requests, prevent duplicate pending requests, and track request history by status.
+
+### Landlord
+
+- Create, edit, list, and unlist owned properties; unlisting automatically withdraws outstanding requests.
+- Review tenant requests and profile details, then approve or deny requests for owned properties.
 
 ## Technical Highlights
 
@@ -88,6 +112,11 @@ Never commit service-account credentials or other private backend secrets.
 2. Allow Swift Package Manager to resolve the Firebase dependencies.
 3. Select the `Rent_Project` scheme and an iOS simulator or connected device.
 4. Build and run the app.
+
+## Planned Improvement
+
+- **Live rental data:** Replace the fictional property records used for the course prototype with an authorized real-estate listing API, allowing users to browse current and verifiable rental inventory.
+- **Map-based property discovery:** Add a map view that displays rental properties by location, allowing users to explore listings geographically and open property details directly from the map.
 
 ## Author
 
