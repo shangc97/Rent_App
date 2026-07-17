@@ -1,105 +1,96 @@
 # 4Rent
 
-4Rent is a SwiftUI rental marketplace app built for an Advanced iOS course project. The app supports three user roles: guest, tenant, and landlord. It uses Firebase Authentication for account management and Cloud Firestore for persistent app data.
+4Rent is a SwiftUI rental marketplace that connects guest browsing, tenant applications, and landlord listing management through Firebase-backed, role-specific workflows.
 
-## Implemented Features
+## Project Context and Personal Scope
 
-### Guest User
+Chuhan Shang designed and implemented 4Rent as an individual Advanced iOS course project. The project brief required a single Firestore-backed rental system with guest, tenant, and landlord experiences, Firebase Authentication, editable profiles, and remembered sign-in credentials.
 
-- Browse all property listings
-- Search rental properties by keyword, city, or address
-- View property details
+Within those requirements, the implementation uses one role-aware iOS app, an Observation-based Model-Repository-Store-View structure, Keychain-protected password storage, coordinated request and listing state changes, and reusable SwiftUI result-state components.
 
-### Tenant User
+## Key Workflows
 
-- Create an account and sign in with FirebaseAuth
-- Browse and search rental properties
-- View full property details
-- Share property details
-- Add or remove properties from a shortlist
-- View shortlisted properties
-- Submit rental requests
-- Withdraw submitted rental requests
-- View request history by status
-- View and edit personal profile information
+- **Role-based entry:** Guests can browse without an account, while tenants and landlords can register, sign in, and enter navigation flows selected from their Firestore profile role.
+- **Property discovery:** Users can browse listings by status, search currently listed properties by title, city, or address, and inspect property and landlord details.
+- **Tenant shortlist and sharing:** Tenants can persist a shortlist in Firestore, filter saved properties by status, and share a formatted property summary with the system share sheet.
+- **Rental request lifecycle:** Tenants can submit and withdraw requests, cannot create duplicate pending requests for the same property, and can review pending, processed, and archived history.
+- **Landlord listing management:** Landlords can add and edit owned properties, move listings between listed and unlisted states, and review incoming requests.
+- **Request review and profiles:** Landlords can approve or deny requests for their own properties, while authenticated users can view and update their profile or sign out from any role flow.
 
-### Landlord User
+## Technical Highlights
 
-- Create an account and sign in with FirebaseAuth
-- Browse and search rental properties
-- View property details
-- Add new property listings
-- Edit owned property details
-- List and unlist owned properties
-- View owned listings by status
-- Receive rental requests for owned properties
-- Approve or deny submitted rental requests
-- View and edit personal profile information
+- **Role-driven app composition:** `AppState` represents loading, logged-out, guest, tenant, and landlord sessions. `RootView` uses that state to select a single top-level flow, while `AppSessionCoordinator` centralizes cross-store sign-in, guest access, and sign-out behavior.
+- **Separated state and persistence:** `@MainActor` Observation stores expose loading, error, and domain state to SwiftUI. Repository types isolate Firebase Authentication and Firestore operations so views remain focused on presentation and user interaction.
+- **Safer remembered credentials:** Remember Me stores the user ID and email in `UserDefaults`, protects the password with the iOS Keychain, and pre-fills the form without automatically submitting a future login.
+- **Coordinated listing updates:** When a landlord unlists an available property, a Firestore batch updates the property and withdraws its submitted requests together. The stores then mirror the successful change in local observable state.
+- **Workflow validation:** Request actions validate the active role, ownership, and current status before persistence. The tenant flow also queries existing requests to prevent duplicate pending applications.
+- **Reusable result states:** Shared loading, empty-state, filter, result-card, and fixed-control layout components keep browse, shortlist, listing, and request screens consistent.
 
-## Authentication and Session Behavior
+## Architecture
 
-- Firebase Authentication is used for registration, sign in, and sign out
-- User roles are resolved from Firestore profile documents
-- The app routes authenticated users to the correct tenant or landlord flow
-- A guest flow is available without signing in
-- Remember Me pre-fills saved email and password on the next app launch without automatically submitting login
+```text
+SwiftUI feature views
+        |
+AppState + @Observable stores
+        |
+Repository layer
+        |
+Firebase Authentication + Cloud Firestore
+```
 
-## Data Persistence
+- `App/` owns root session state, role routing, and cross-store session coordination.
+- `Core/Models/` defines profiles, properties, shortlist entries, and rental requests.
+- `Core/Stores/` manages `@MainActor` UI state and validates domain actions.
+- `Core/Repositories/` maps models to Firebase Authentication and Firestore operations.
+- `Features/` groups authentication, browse, tenant, landlord, profile, and property-detail workflows.
+- `Shared/Views/` contains reusable loading, empty, filtering, layout, and result components.
 
-Cloud Firestore is used to persist user-generated data across multiple root-level collections:
+### Firestore Data Model
 
-- `users`
-- `properties`
-- `rentalRequests`
-- `shortlistProperties`
+| Collection | Model | Purpose |
+| --- | --- | --- |
+| `users` | `UserProfile` | Account role and editable profile details |
+| `properties` | `Property` | Rental listing content, ownership, and listing status |
+| `rentalRequests` | `RentalRequest` | Tenant-landlord requests and lifecycle status |
+| `shortlistProperties` | `ShortlistProperty` | Tenant-to-property shortlist relationships |
 
 ## Tech Stack
 
-- Swift
-- SwiftUI
-- Observation
-- FirebaseAuth
-- Cloud Firestore
+| Area | Technology |
+| --- | --- |
+| Language | Swift 5 |
+| UI | SwiftUI |
+| State management | Observation with `@Observable` |
+| Concurrency | Swift `async`/`await` with main-actor stores |
+| Authentication | Firebase Authentication |
+| Persistence | Cloud Firestore |
+| Secure storage | iOS Security framework and Keychain Services |
+| Dependency management | Swift Package Manager |
 
-## Project Structure
+## Running the Project
 
-```text
-Rent_Project/
-├── README.md
-├── Rent_Project.xcodeproj
-└── Rent_Project/
-    ├── App/
-    ├── Core/
-    │   ├── Models/
-    │   ├── Repositories/
-    │   └── Stores/
-    ├── Features/
-    │   ├── Auth/
-    │   ├── Browse/
-    │   ├── Guest/
-    │   ├── Landlord/
-    │   ├── Profile/
-    │   ├── PropertyDetails/
-    │   └── Tenant/
-    ├── Shared/
-    │   └── Views/
-    ├── Assets.xcassets/
-    ├── GoogleService-Info.plist
-    └── Rent_ProjectApp.swift
-```
+### Prerequisites
 
-## How to Run
+- macOS with Xcode and iOS 26.5 SDK support; the project currently targets iOS 26.5.
+- A Firebase iOS project with Email/Password Authentication and Cloud Firestore enabled.
+
+### Configuration
+
+1. Register an iOS app in Firebase with the bundle identifier `shangc.Rent-Project`.
+2. Add the Firebase `GoogleService-Info.plist` file at `Rent_Project/GoogleService-Info.plist`.
+3. Configure Firebase Authentication and Firestore access rules for the intended users and collections.
+
+Never commit service-account credentials or other private backend secrets.
+
+### Running
 
 1. Open `Rent_Project.xcodeproj` in Xcode.
-2. Select the `Rent_Project` scheme.
-3. Make sure the included Firebase configuration file is present.
-4. Run the app on an iOS Simulator or physical device.
+2. Allow Swift Package Manager to resolve the Firebase dependencies.
+3. Select the `Rent_Project` scheme and an iOS simulator or connected device.
+4. Build and run the app.
 
-## Architecture Notes
+## Author
 
-- `App/` manages root session state and flow coordination
-- `Core/Models/` defines the main app entities
-- `Core/Repositories/` handles Firebase read and write operations
-- `Core/Stores/` holds observable in-memory state for the UI layer
-- `Features/` contains role-based screens and business flows
-- `Shared/Views/` contains reusable UI building blocks
+**Chuhan Shang**
+
+[GitHub](https://github.com/shangc97)
