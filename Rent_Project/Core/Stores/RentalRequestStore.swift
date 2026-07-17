@@ -105,7 +105,6 @@ final class RentalRequestStore {
     }
 
     /// Validates and submits a new rental request for the active tenant.
-    @discardableResult
     func submitRentalRequest(
         _ rentalRequest: RentalRequest,
         tenantId: String
